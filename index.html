@@ -40,32 +40,34 @@
                 <div class="container col-6 border">
                     <div class="row">
                         <h5>Query:</h5>
-                        <div class="d-flex justify-content-start gap-1">
+                        <div class="d-flex justify-content-center gap-1">
                             <button class="btn btn-outline-secondary">Search</button>
                             <button class="btn btn-outline-secondary">Add</button>
                             <button class="btn btn-outline-secondary">Remove</button>
                         </div>
                     </div>
 
-                    <div class="row text-start py-3 ps-4">
+                    <div class="row text-center py-3 ps-4">
                         <form action="">
                                 <div class="pb-3">
-                                    <label class="form-label" for="input-ingredient-name">Ingredient Name:</label>
+                                    <label class="form-label fw-bold" for="input-ingredient-name">Ingredient Name:</label>
                                     <input id="input-ingredient-name" class="form-control" type="text" placeholder="blue mountain flower">
                                 </div>
                             
                                 <fieldset id="chemicals-fieldset">
-                                    <legend class="fs-6">Chemicals:</legend>
-                                    <div id="chem0-name-input-group" class="input-group">
-                                        <label id="chem0-label" class="input-group-text" for="chem0-input">Chem:</label>
-                                        <input id="chem0-input" class="form-control" type="text" placeholder="name">
+                                    <legend class="fs-6 fw-bold">Ingredient Composition:</legend>
+                                    <div id="chem0-name-input-group " class="input-group pb-1">
+                                        <label id="chem0-label" class="input-group-text " for="chem0-input">Chem:</label>
+                                        <input id="chem0-input" class="form-control" type="text" placeholder="---">
                                     </div>
-                                    <div id="chem0-quantity-input-group" class="col input-group">
+                                    <div id="chem0-quantity-input-group" class="input-group pb-3">
                                         <span class="input-group-text">min</span>
-                                        <input id="chem0-min-input" class="form-control" type="number">
+                                        <input id="chem0-min-input" class="form-control" type="number" placeholder="---">
                                         <span class="input-group-text">max</span>
-                                        <input id="chem0-max-input" class="form-control" type="number">
+                                        <input id="chem0-max-input" class="form-control" type="number" placeholder="---">
                                     </div>
+                                    
+                                    
                                     
                                 </fieldset>
                         </form>
@@ -94,17 +96,14 @@
                 </div>
             </div>
 
-            <!-- Directions & Output Row -->
-            <div class="row">
-                <!-- Directions -->
-                <div class="col-6 border">
-                    directions
-                </div>
+            <!-- Output Row -->
+            <div class="row border">
+                <h5>Output Console</h5>
+            </div>
 
-                <!-- Output -->
-                <div class="col-6 border">
-                    <h5>Output Console</h5>
-                </div>
+            <!-- Directions Row -->
+            <div class="row border">
+                <h5>Directions</h5>
             </div>
         </div>
     </body>
