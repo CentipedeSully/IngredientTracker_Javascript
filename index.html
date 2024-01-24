@@ -37,9 +37,9 @@
             <!-- Input & Display Row -->
             <div class="row">
                 <!-- Inputs -->
-                <div class="container col-6 border">
+                <div class="container col-4 border">
                     <div class="row">
-                        <h5>Query:</h5>
+                        <h5 class="py-2">Build Query</h5>
                         <div class="d-flex justify-content-center gap-1">
                             <button class="btn btn-outline-secondary">Search</button>
                             <button class="btn btn-outline-secondary">Add</button>
@@ -55,20 +55,20 @@
                                 </div>
                             
                                 <fieldset id="chemicals-fieldset">
-                                    <legend class="fs-6 fw-bold">Ingredient Composition:</legend>
-                                    <div id="chem0-name-input-group " class="input-group pb-1">
-                                        <label id="chem0-label" class="input-group-text " for="chem0-input">Chem:</label>
-                                        <input id="chem0-input" class="form-control" type="text" placeholder="---">
+                                    <legend class="fs-6 fw-bold">Chemical Composition:</legend>
+                                    <div style="height: 150px; overflow: scroll;">
+                                        <div id="chem0-name-input-group " class="input-group pb-1">
+                                            <label id="chem0-label" class="input-group-text " for="chem0-input">Chem:</label>
+                                            <input id="chem0-input" class="form-control" type="text" placeholder="---">
+                                        </div>
+                                        <div id="chem0-quantity-input-group" class="input-group pb-3">
+                                            <span class="input-group-text">min</span>
+                                            <input id="chem0-min-input" class="form-control" type="number" placeholder="1">
+                                            <span class="input-group-text">max</span>
+                                            <input id="chem0-max-input" class="form-control" type="number" placeholder="999">
+                                        </div>
+                                        
                                     </div>
-                                    <div id="chem0-quantity-input-group" class="input-group pb-3">
-                                        <span class="input-group-text">min</span>
-                                        <input id="chem0-min-input" class="form-control" type="number" placeholder="---">
-                                        <span class="input-group-text">max</span>
-                                        <input id="chem0-max-input" class="form-control" type="number" placeholder="---">
-                                    </div>
-                                    
-                                    
-                                    
                                 </fieldset>
                         </form>
                     </div>
@@ -90,20 +90,95 @@
                 </div>
 
                 <!-- Display -->
-                <div class="col-6 border">
-                    <h5>Output Display</h5>
+                <div class="col-8 border">
+                    <h5 class="pt-2">Display</h5>
+                    <p class="fst-italic pb-2">
+                        <span>Population: </span>
+                        <span id="table-population-display">0</span>
+                        <span>of</span>
+                        <span id="database-population-display">0</span>
+                        <span>items displayed</span>
+                    </p>
+
+                    <div >
+                        <table class="table table-striped">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th scope="col">Ingredient</th>
+                                    <th>Chems</th>
+                                    <th>Qty</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-group-divider">
+                                <tr>
+                                    <td>example ingredient 1</td>
+                                    <td>calele</td>
+                                    <td>1</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>belele</td>
+                                    <td>1</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>celele</td>
+                                    <td>1</td>
+                                </tr>
+                                <tr>
+                                    <td>example ingredient 2</td>
+                                    <td>malmumu</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>example ingredient 2</td>
+                                    <td>malmumu</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>example ingredient 2</td>
+                                    <td>malmumu</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>example ingredient 2</td>
+                                    <td>malmumu</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>example ingredient 2</td>
+                                    <td>malmumu</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>example ingredient 2</td>
+                                    <td>malmumu</td>
+                                    <td>2</td>
+                                </tr>
+                                
+                            </tbody>
+                            <tfoot class="table-group-divider">
+                                <tr>
+                                    <td>END</td>
+                                    <td># results:</td>
+                                    <td id="table-results-count">0</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    
                     <!-- Revisit Tables -->
                 </div>
             </div>
 
             <!-- Output Row -->
             <div class="row border">
-                <h5>Output Console</h5>
+                <h5 class="py-2">Output Console</h5>
             </div>
 
             <!-- Directions Row -->
             <div class="row border">
-                <h5>Directions</h5>
+                <h5 class="py-2">Directions</h5>
             </div>
         </div>
     </body>
