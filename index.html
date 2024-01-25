@@ -35,28 +35,28 @@
             </div>
 
             <!-- Input & Display Row -->
-            <div class="row">
+            <div class="row hover">
                 <!-- Inputs -->
-                <div class="container col-4 border">
+                <div class="container col-4">
                     <div class="row">
                         <h5 class="py-2">Build Query</h5>
-                        <div class="d-flex justify-content-center gap-1">
-                            <button class="btn btn-outline-secondary">Search</button>
-                            <button class="btn btn-outline-secondary">Add</button>
-                            <button class="btn btn-outline-secondary">Remove</button>
+                        <div class="d-flex justify-content-center gap-1 flex-wrap">
+                            <button class="btn btn-outline-secondary active">Search</button>
+                            <button class="btn btn-outline-success">Add</button>
+                            <button class="btn btn-outline-danger">Remove</button>
                         </div>
                     </div>
 
-                    <div class="row text-center py-3 ps-4">
+                    <div class="row text-start py-3">
                         <form action="">
                                 <div class="pb-3">
-                                    <label class="form-label fw-bold" for="input-ingredient-name">Ingredient Name:</label>
-                                    <input id="input-ingredient-name" class="form-control" type="text" placeholder="blue mountain flower">
+                                    <label class="form-label fs-5" for="input-ingredient-name">Ingredient:</label>
+                                    <input id="input-ingredient-name" class="form-control" type="text" placeholder="salt pile">
                                 </div>
                             
-                                <fieldset id="chemicals-fieldset">
-                                    <legend class="fs-6 fw-bold">Chemical Composition:</legend>
-                                    <div style="height: 150px; overflow: scroll;">
+                                <fieldset id="chemicals-fieldset" >
+                                    <legend class="fs-5">Chemical Composition:</legend>
+                                    <div class=" p-1 border rounded overflow-scroll" style="max-height: 250px;">
                                         <div id="chem0-name-input-group " class="input-group pb-1">
                                             <label id="chem0-label" class="input-group-text " for="chem0-input">Chem:</label>
                                             <input id="chem0-input" class="form-control" type="text" placeholder="---">
@@ -72,8 +72,9 @@
                                 </fieldset>
                         </form>
                     </div>
+                    
 
-                    <div class="row ps-4">
+                    <div class="row">
                         <div class="d-flex justify-content-start pb-3 gap-1">
                             <button class="btn btn-outline-secondary">+</button>
                             <button class="btn btn-outline-secondary">-</button>
@@ -81,93 +82,97 @@
                     </div>
 
                     <div class="row">
-                        <div class="d-flex justify-content-end pb-3 gap-1">
+                        <div class="d-flex justify-content-end pb-3 gap-1 flex-wrap">
                             <button class="btn btn-outline-secondary">Clear</button>
-                            <button class="btn btn-outline-secondary">Submit</button>
+                            <button class="btn btn-outline-success">Submit</button>
                         </div>
                     </div>
                     
                 </div>
 
                 <!-- Display -->
-                <div class="col-8 border">
-                    <h5 class="pt-2">Display</h5>
-                    <p class="fst-italic pb-2">
-                        <span>Population: </span>
-                        <span id="table-population-display">0</span>
-                        <span>of</span>
-                        <span id="database-population-display">0</span>
-                        <span>items displayed</span>
-                    </p>
-
-                    <div >
-                        <table class="table table-striped">
-                            <thead class="table-primary">
-                                <tr>
-                                    <th scope="col">Ingredient</th>
-                                    <th>Chems</th>
-                                    <th>Qty</th>
-                                </tr>
-                            </thead>
-                            <tbody class="table-group-divider">
-                                <tr>
-                                    <td>example ingredient 1</td>
-                                    <td>calele</td>
-                                    <td>1</td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td>belele</td>
-                                    <td>1</td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td>celele</td>
-                                    <td>1</td>
-                                </tr>
-                                <tr>
-                                    <td>example ingredient 2</td>
-                                    <td>malmumu</td>
-                                    <td>2</td>
-                                </tr>
-                                <tr>
-                                    <td>example ingredient 2</td>
-                                    <td>malmumu</td>
-                                    <td>2</td>
-                                </tr>
-                                <tr>
-                                    <td>example ingredient 2</td>
-                                    <td>malmumu</td>
-                                    <td>2</td>
-                                </tr>
-                                <tr>
-                                    <td>example ingredient 2</td>
-                                    <td>malmumu</td>
-                                    <td>2</td>
-                                </tr>
-                                <tr>
-                                    <td>example ingredient 2</td>
-                                    <td>malmumu</td>
-                                    <td>2</td>
-                                </tr>
-                                <tr>
-                                    <td>example ingredient 2</td>
-                                    <td>malmumu</td>
-                                    <td>2</td>
-                                </tr>
-                                
-                            </tbody>
-                            <tfoot class="table-group-divider">
-                                <tr>
-                                    <td>END</td>
-                                    <td># results:</td>
-                                    <td id="table-results-count">0</td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                <div class="col-8 ">
+                    <div class="row">
+                        <h5 class="pt-2">Display</h5>
                     </div>
+                    <div class="row">
+                        <p class="fst-italic">
+                            <span>Currently showing </span>
+                            <span id="table-population-display">0</span>
+                            <span>of</span>
+                            <span id="database-population-display">0</span>
+                            <span>database ingredients</span>
+                        </p>
+                    </div>
+                    <div class="row">
+                        <div class="d-flex justify-content-center pb-2 gap-1 flex-wrap">
+                            <button class="btn btn-outline-secondary btn-sm active">Alphabetical</button>
+                            <button class="btn btn-outline-secondary btn-sm">Ascending</button>
+                            <button class="btn btn-outline-secondary btn-sm">Descending</button>
+                        </div>
+                    </div>
+                   
+                    <div class="row">
+                        <div class="border rounded p-2 ms-1 overflow-scroll" 
+                            style="max-height: 443.5px;">
+                            <table class="table table-striped table-sm">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th class="fst-italic">Index</th>
+                                        <th>Ingredient</th>
+                                        <th>Chems</th>
+                                        <th>Qty</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-group-divider">
+                                    <tr>
+                                        <td class="fst-italic">1</td>
+                                        <td>example ingredient 1</td>
+                                        <td>calele</td>
+                                        <td>1</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fst-italic">1</td>
+                                        <td></td>
+                                        <td>belele</td>
+                                        <td>1</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fst-italic">1</td>
+                                        <td></td>
+                                        <td>celele</td>
+                                        <td>1</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fst-italic">2</td>
+                                        <td>example ingredient 2</td>
+                                        <td>malmumu</td>
+                                        <td>2</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fst-italic">3</td>
+                                        <td>example ingredient 3</td>
+                                        <td>malmumu</td>
+                                        <td>2</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot class="table-group-divider">
+                                    <tr class="table-primary">
+                                        <td>-</td>
+                                        <td>END</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div> 
                     
-                    <!-- Revisit Tables -->
+                    <div class="row pt-3">
+                        <div class="d-flex justify-content-end pb-2 gap-1 flex-wrap">
+                            <button class="btn btn-outline-secondary btn-sm">Clear Display</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
