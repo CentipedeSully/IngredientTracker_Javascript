@@ -34,14 +34,26 @@
                 </p>
             </div>
 
-            <div class="py-2 mb-2 rounded">
-                <h5>Import/Export</h5>
-                <div class="form-control">
-                    <form action="">
-                        <input type="file">
-                    </form>
+            <!-- Import/Export Area -->>
+            <form action="" class=" mb-3">
+                <div class="py-2 mb-2 rounded container ">
+                    <div class="row row-cols-md-2 row-cols-lg-3 row-cols-sm-1 row-cols-1 justify-content-center">
+                        <div class="col ">
+                            <label for="import-btn" class="form-label">
+                                Import: <input type="file" id="import-btn" accept=".csv" class="form-control">
+                                <button id="import-btn" class="btn btn-outline-success btn-sm px-3" type="submit">Import</button>
+                            </label>
+                        </div>
+                        <div class="col">
+                            <p class="form-label mb-0">Export:</p>
+                            <button id="export-btn" class="btn btn-outline-secondary btn-sm px-5">Export</button>
+                        </div>
+                            
+                    </div>
+                    
                 </div>
-            </div>
+            </form>
+            
 
             <!-- Input & Display Row -->
             <div class="row hover">
@@ -50,12 +62,12 @@
                     <div class="row">
                         <h5 class="py-2">Build Query</h5>
                         <div class="btn-group btn-group" style="display: inline;">
-                            <input type="radio" class="btn-check" name="query-context" id="search-context" checked>
-                            <label for="search-context" class="btn btn-outline-secondary ">Search</label>
-                            <input type="radio" class="btn-check" name="query-context" id="add-context">
-                            <label for="add-context" class="btn btn-outline-success ">Add</label>
-                            <input type="radio" class="btn-check" name="query-context" id="remove-context">
-                            <label for="remove-context" class="btn btn-outline-danger ">Remove</label>
+                            <input type="radio" class="btn-check" name="query-context" id="search-context-btn" checked>
+                            <label for="search-context-btn" class="btn btn-outline-secondary ">Search</label>
+                            <input type="radio" class="btn-check" name="query-context" id="add-context-btn">
+                            <label for="add-context-btn" class="btn btn-outline-success ">Add</label>
+                            <input type="radio" class="btn-check" name="query-context" id="remove-context-btn">
+                            <label for="remove-context-btn" class="btn btn-outline-danger ">Remove</label>
                         </div>
                     </div>
 
@@ -69,47 +81,7 @@
                                 <fieldset id="chemicals-fieldset" >
                                     <legend class="fs-5">Chemical Composition:</legend>
                                     <div class=" p-1 border rounded overflow-scroll" style="max-height: 250px;">
-                                        <div id="chem0-name-input-group " class="input-group pb-1">
-                                            <label id="chem0-label" class="input-group-text " for="chem0-input">Chem:</label>
-                                            <input id="chem0-input" class="form-control" type="text" placeholder="---">
-                                        </div>
-                                        <div id="chem0-quantity-input-group" class="input-group pb-3">
-                                            <span class="input-group-text">min</span>
-                                            <input id="chem0-min-input" class="form-control" type="number" placeholder="1">
-                                            <span class="input-group-text">max</span>
-                                            <input id="chem0-max-input" class="form-control" type="number" placeholder="999">
-                                        </div>
-                                        <div id="chem0-name-input-group " class="input-group pb-1">
-                                            <label id="chem0-label" class="input-group-text " for="chem0-input">Chem:</label>
-                                            <input id="chem0-input" class="form-control" type="text" placeholder="---">
-                                        </div>
-                                        <div id="chem0-quantity-input-group" class="input-group pb-3">
-                                            <span class="input-group-text">min</span>
-                                            <input id="chem0-min-input" class="form-control" type="number" placeholder="1">
-                                            <span class="input-group-text">max</span>
-                                            <input id="chem0-max-input" class="form-control" type="number" placeholder="999">
-                                        </div>
-                                        <div id="chem0-name-input-group " class="input-group pb-1">
-                                            <label id="chem0-label" class="input-group-text " for="chem0-input">Chem:</label>
-                                            <input id="chem0-input" class="form-control" type="text" placeholder="---">
-                                        </div>
-                                        <div id="chem0-quantity-input-group" class="input-group pb-3">
-                                            <span class="input-group-text">min</span>
-                                            <input id="chem0-min-input" class="form-control" type="number" placeholder="1">
-                                            <span class="input-group-text">max</span>
-                                            <input id="chem0-max-input" class="form-control" type="number" placeholder="999">
-                                        </div>
-                                        <div id="chem0-name-input-group " class="input-group pb-1">
-                                            <label id="chem0-label" class="input-group-text " for="chem0-input">Chem:</label>
-                                            <input id="chem0-input" class="form-control" type="text" placeholder="---">
-                                        </div>
-                                        <div id="chem0-quantity-input-group" class="input-group pb-3">
-                                            <span class="input-group-text">min</span>
-                                            <input id="chem0-min-input" class="form-control" type="number" placeholder="1">
-                                            <span class="input-group-text">max</span>
-                                            <input id="chem0-max-input" class="form-control" type="number" placeholder="999">
-                                        </div>
-                                        <div id="chem0-name-input-group " class="input-group pb-1">
+                                        <div id="chem0-name-input-group" class="input-group pb-1">
                                             <label id="chem0-label" class="input-group-text " for="chem0-input">Chem:</label>
                                             <input id="chem0-input" class="form-control" type="text" placeholder="---">
                                         </div>
