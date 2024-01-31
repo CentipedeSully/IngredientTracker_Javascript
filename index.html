@@ -78,18 +78,34 @@
                                     <input id="input-ingredient-name" class="form-control" type="text" placeholder="salt pile">
                                 </div>
                             
-                                <fieldset id="chemicals-fieldset" >
+                                <fieldset>
                                     <legend class="fs-5">Chemical Composition:</legend>
-                                    <div class=" p-1 border rounded overflow-scroll" style="max-height: 250px;">
-                                        <div id="chem0-name-input-group" class="input-group pb-1">
-                                            <label id="chem0-label" class="input-group-text " for="chem0-input">Chem:</label>
-                                            <input id="chem0-input" class="form-control" type="text" placeholder="---">
-                                        </div>
-                                        <div id="chem0-quantity-input-group" class="input-group pb-3">
-                                            <span class="input-group-text">min</span>
-                                            <input id="chem0-min-input" class="form-control" type="number" placeholder="1">
-                                            <span class="input-group-text">max</span>
-                                            <input id="chem0-max-input" class="form-control" type="number" placeholder="999">
+                                    <div id="chemical-input-fields" class=" p-1 border rounded overflow-scroll" style="max-height: 250px;">
+                                        <div id="chem0-input" class="chem-field">
+
+                                            <!-- Chem name will always show. Id's are unique -->
+                                            <div class="input-group pb-1 chem-name-container">
+                                                <label class="input-group-text " for="chem0-input">Chem:</label>
+                                                <input id="chem0-input" class="form-control" type="text" placeholder="---">
+                                            </div>
+
+                                            <!-- Chem bounds will only show if in Search context -->
+                                            <div class="pb-3 chem-bounds-container">
+                                                <div class="input-group pb-1 min-bound-container">
+                                                    <label class="input-group-text" for="chem0-min-bound">Min:</label>
+                                                    <input id="chem0-min-bound" class="form-control chem-bound" type="number" placeholder="---" min="1" size="3">
+                                                </div>
+                                                <div class="input-group max-bound-container">
+                                                    <label class="input-group-text " for="chem0-max-bound">Max:</label>
+                                                    <input id="chem0-max-bound" class="form-control chem-bound" type="number" placeholder="---" min="1" size="3">
+                                                </div>
+                                            </div>
+
+                                            <!-- Chem value will only show if in Add or Remove context -->
+                                            <div class="input-group pb-3 chem-value-container">
+                                                <label class="input-group-text " for="chem0-value">Qty:</label>
+                                                <input id="chem0-value" class="form-control chem-value" type="number" placeholder="---" min="1">
+                                            </div>
                                         </div>
                                     </div>
                                 </fieldset>
