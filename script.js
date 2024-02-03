@@ -116,11 +116,16 @@ function buildChemValueInputHTML(chemEntryNumber){
 function buildChemEntryHTML(newChemEntryNumber){
     if (queryContext === "search"){
         return `${buildChemNameInputHTML(newChemEntryNumber)}
-            ${buildChemBoundsInputHTML(newChemEntryNumber)}`;
+        <div class="pb-3 chem-bounds-container">
+            ${buildChemBoundsInputHTML(newChemEntryNumber)}
+        </div>`;
     }
     else if (queryContext === "add"){
         return `${buildChemNameInputHTML(newChemEntryNumber)}
-        ${buildChemValueInputHTML(newChemEntryNumber)}`;
+        <div class="pb-3 chem-value-container">
+            ${buildChemValueInputHTML(newChemEntryNumber)}
+        </div>`;
+        
     }
     else if (queryContext === "remove"){
         return `${buildChemNameInputHTML(newChemEntryNumber)}`;
@@ -159,9 +164,13 @@ function removeLastChemEntry(){
 }
 
 function removeChemBoundsInputs(){
-    let chemBoundsContainers = document.getElementsByClassName("chem-bounds-container");
-    for (let i = 0; i < chemBoundsContainers.length; i++){
-        chemBoundsContainers[i].remove();
+    //Get every chemical entry, and then remove every html occurence of a Bound Container
+    let chemEntryContainers = document.getElementsByClassName("chem-entry");
+    for (let i=0; i < chemEntryContainers.length; i++){
+        let boundContainers = chemEntryContainers[i].getElementsByClassName("chem-bounds-container");
+        for (let j = boundContainers.length -1; j >=0 ;j--){
+            boundContainers[j].remove();
+        }
     }
 }
 
@@ -177,10 +186,14 @@ function addChemBoundsInputs(){
 }
 
 function removeChemValueInputs(){
-    let chemValueContainers = document.getElementsByClassName("chem-value-container");
-    for (let i = 0; i < chemValueContainers.length; i++){
-        chemValueContainers[i].remove();
+    let chemEntryContainers = document.getElementsByClassName("chem-entry");
+    for (let i=0; i < chemEntryContainers.length; i++){
+        let valueContainers = chemEntryContainers[i].getElementsByClassName("chem-value-container");
+        for (let j = valueContainers.length -1; j >=0 ;j--){
+            valueContainers[j].remove();
+        }
     }
+
 }
 
 function addChemValueInputs(){
