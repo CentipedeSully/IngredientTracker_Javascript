@@ -1,14 +1,140 @@
-//Initial Declarations
-let ingredientCollection = new Map(); //Key === ingredient name, value === chemical map
+//Class defs
+class Ingredient{
+    #name = '';
+    #chemMap = new Map();
+
+    //chemMap is a Map of (chemicalName, quantity) pairs
+    constructor(name, chemMap){
+        let isStringValid = isStringValid(name);
+        let isMapValid = isMapValid(chemMap);
+
+        if ( isStringValid && isMapValid)
+        {
+            this.#name = name;
+            this.#chemMap = chemMap;
+        }
+        else { 
+            if ( !isStringValid && !isMapValid)
+                console.log(`invalid name AND map detected in Ingredient Constructor (name,map): (${name}, ${chemMap})`);
+            else if (!isStringValid)
+                console.log(`invalid name detected in Ingredient Constructor: ${name}`);
+            
+            else console.log(`invalid map detected in Ingredient Constructor: ${chemMap}`);
+         }
+
+    }
+
+    get name(){ return this.#name;}
+
+    doesChemicalExist(chemName){
+        return this.#chemMap.has(chemName);
+    }
+
+    addChemical(name,value){
+        let isStringValid = isStringValid(name);
+        let isNumberValid = isNumberValid(value);  
+        if ( isStringValid && isNumberValid)
+            this.#chemMap.set(name,value);
+        else{
+            if ( !isStringValid && !isNumberValid)
+                console.log(`invalid name AND value while adding chemical (name,value): (${name}, ${value})`);
+            else if (!isStringValid)
+                console.log(`invalid name detected while adding Chemical: ${name}`);
+            
+            else console.log(`invalid value detected while adding Chemical: ${value}`);
+        }
+
+    }
+
+    removeChemical(name){
+        if (this.doesChemicalExist(name))
+            this.#chemMap.remove(name);
+    }
+
+    getChemicalValuePair(name){
+        if (this.doesChemicalExist(name)){
+            return [name, this.#chemMap.get(name)];
+        }
+    }
+
+    getChemicalPairsViaSubstring(substring){
+        if (!isStringValid(substring)){
+            console.log(`invalid substring detected while getting chemical pairs: ${substring}`);
+            return;
+        }
+
+        let allChemicalNames = this.#chemMap.keys().sort();
+        let matchingChemicalPairs = [];
+
+        for (let i = 0; i < allChemicalNames.length; i++){
+            if (allChemicalNames[i].includes(substring))
+                matchingChemicalPairs.push([allChemicalNames[i], this.#chemMap.get(allChemicalNames[i])]);
+        }
+
+        return matchingChemicalPairs;
+    }
+
+    getChemicalPairsViaSubstringAndBounds(substring, minValue = 0, maxValue = 9){
+        //Get the substring-matching pairs first
+        let unboundMatches = this.getChemicalPairsViaSubstring(substring);
+
+        //Build the new arry
+        let matchingPairsWithinBounds = [];
+
+        for (let i = 0; i < unboundMatches.length; i ++){
+            //
+            if (minValue <= unboundMatches[i][1] <= maxValue)
+                matchingPairsWithinBounds.push(unboundMatches[i]);
+        }
+
+        return matchingPairsWithinBounds;
+    }
+
+    static isStringValid(name){
+        return name !== null && typeof name === 'string' && name !== undefined;
+    }
+
+    static isNumberValid(value){
+        return value !== null && typeof value === "number"  && value !== undefined;
+    }
+
+    static isMapValid(mapParameter){
+        return mapParameter !== null && mapParameter instanceof Map  && mapParameter !== undefined;
+    }
+
+    static sortChemicalsByAscendingValue(nameValuePairArray){
+        let sortedPairs = [];
+        let iterationCount = nameValuePairArray.length;
+
+        for (let i=0; i < iterationCount; i++){
+
+            for (let j=0; j + i < iterationCount; j++){
+                if (nameValuePairArray[])
+            }
+        }
+    }
+}
+
+
+
+//Internal state-tracking Declarations
+let ingredientCollection = [];
 let queryContext = "search";
 let sortStyle = "alphabetical";
 let chemicalEntriesCount = 0;
+let ingredientsOnDisplay = 0;
+
+
+
+//Input references
+let ingredientInputName = document.getElementById("ingredient-name-input");
 
 
 
 //Button References
 let importBtn = document.getElementById("import-btn");
 let exportBtn = document.getElementById("export-btn");
+
 
 
 let searchContextBtn = document.getElementById("search-context-btn");
@@ -19,8 +145,6 @@ addContextBtn.addEventListener("click", enterAddContext);
 
 let removeContextBtn = document.getElementById("remove-context-btn");
 removeContextBtn.addEventListener("click", enterRemoveContext);
-
-let ingredientInputName = document.getElementById("ingredient-name-input");
 
 
 
@@ -49,17 +173,6 @@ let totalDatabasePopulationDisplay = document.getElementById("total-database-pop
 let currentTablePopulationDisplay = document.getElementById("current-table-population-display");
 let displayTableBody = document.getElementById("display-table-body");
 let logOutputDisplay = document.getElementById("log-output");
-
-
-
-//Class defs
-class Ingredient{
-    //chemMap is a Map of (chemicalName, quantity) pairs
-    constructor(name, chemMap){
-        this.name = name;
-        this.chemMap = chemMap;
-    }
-}
 
 
 
@@ -206,6 +319,5 @@ function addChemValueInputs(){
     }
 }
 
-// Event/Action Functions
 
 
