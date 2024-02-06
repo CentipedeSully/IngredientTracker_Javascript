@@ -10,8 +10,14 @@ class Ingredient{
 
         if ( isStringValid && isMapValid)
         {
-            this.#name = name;
-            this.#chemMap = chemMap;
+            this.#name = name.toLowerCase();
+
+            //further validate the Map. Only add valid chemical entries, and make the names lower case
+            chemMap.array.forEach((value,key,map) => {
+                if (isStringValid(key) && isNumberValid(value))
+                    this.#chemMap.set(key.toLowerCase(),value);
+            });
+
         }
         else { 
             if ( !isStringValid && !isMapValid)
@@ -58,35 +64,45 @@ class Ingredient{
     }
 
     getChemicalPairsViaSubstring(substring){
+        //Validate the string
         if (!isStringValid(substring)){
             console.log(`invalid substring detected while getting chemical pairs: ${substring}`);
             return;
         }
 
+        //Get the chemical names, sorted
         let allChemicalNames = this.#chemMap.keys().sort();
+        
+
+        //Build the output arry
         let matchingChemicalPairs = [];
 
+        //Check each chem name. 
+        //Add any matches (as a [name,value] pair) to the output arry
         for (let i = 0; i < allChemicalNames.length; i++){
             if (allChemicalNames[i].includes(substring))
                 matchingChemicalPairs.push([allChemicalNames[i], this.#chemMap.get(allChemicalNames[i])]);
         }
 
+        //return the output arry
         return matchingChemicalPairs;
     }
 
     getChemicalPairsViaSubstringAndBounds(substring, minValue = 0, maxValue = 9){
-        //Get the substring-matching pairs first
+        //Get the sorted, substring-matching pairs
         let unboundMatches = this.getChemicalPairsViaSubstring(substring);
 
-        //Build the new arry
+        //Build the output arry
         let matchingPairsWithinBounds = [];
 
+        //Check each match. 
+        //Add any pairs whose values fall within the bounds to the output arry
         for (let i = 0; i < unboundMatches.length; i ++){
-            //
             if (minValue <= unboundMatches[i][1] <= maxValue)
                 matchingPairsWithinBounds.push(unboundMatches[i]);
         }
 
+        //return the output arry
         return matchingPairsWithinBounds;
     }
 
@@ -100,18 +116,6 @@ class Ingredient{
 
     static isMapValid(mapParameter){
         return mapParameter !== null && mapParameter instanceof Map  && mapParameter !== undefined;
-    }
-
-    static sortChemicalsByAscendingValue(nameValuePairArray){
-        let sortedPairs = [];
-        let iterationCount = nameValuePairArray.length;
-
-        for (let i=0; i < iterationCount; i++){
-
-            for (let j=0; j + i < iterationCount; j++){
-                if (nameValuePairArray[])
-            }
-        }
     }
 }
 
@@ -201,6 +205,7 @@ function enterRemoveContext(){
         removeChemValueInputs();
     }
 }
+
 
 //Chemical-field related
 function buildChemNameInputHTML(chemEntryNumber){
@@ -320,4 +325,57 @@ function addChemValueInputs(){
 }
 
 
+//Sorting functions
+function SortChemsByQuantityInAscendingOrder(nameValuePairArry){
+
+    //sort by "insertion" algorithm
+    /*
+        1) Sort the first two elements.
+        2) for each next element, if the next element is less than the last sorted, then
+            swap thier positions. Continue to compare and swap by this new element until it's
+            no longer less than it's Leftward neighbor (or until it has no Leftward neighbor).
+            
+            This works because all Leftward elements (from this new element) have already been
+            sorted.
+    */
+
+    //cache interation count
+    let iterationCount = nameValuePairArry.length;
+
+    //Insertion implementation
+    for (let currentIndex =0; currentIndex < iterationCount; currentIndex++){
+
+        //Clarify our values, for readablility
+        let sortedValue = nameValuePairArry[currentIndex][1]; // [name,value]
+        let unsortedIndex = currentIndex + 1;
+
+        //Make sure next unsorted index exists before attempting to inspect its value
+        if (unsortedIndex < iterationCount){
+            
+            //Enter swap logic if currentSortedValue > unsortedValue && unsortedIndex is withinBounds
+            while(sortedValue > nameValuePairArry[unsortedIndex][1] && unsortedIndex > 0){
+                
+                //clarify the new unsorted value
+                let unsortedValue = nameValuePairArry[unsortedIndex][1];
+
+                //move the unsorted Value to the currentSortedValue's position
+                nameValuePairArry[unsortedIndex-1][1] = unsortedValue;
+
+                //move the currentSortedValue to the old unsortedValue's position
+                nameValuePairArry[unsortedIndex][1] = sortedValue;
+                
+                //update the unsorted index to match the new unsortedValue's position
+                unsortedIndex--;
+
+                //update the old sortedValue into the next-in-line value (if one exists)
+                if (unsortedIndex > 0)
+                    sortedValue = nameValuePairArry[unsortedIndex - 1][1];
+                 
+            }
+        }
+    }
+}
+
+
+//Submission & Clear functions
 
