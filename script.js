@@ -32,6 +32,8 @@ class Ingredient{
 
     get name(){ return this.#name;}
 
+    get chemicalValuePairs(){return this.getChemicalPairsViaSubstring("");}
+
     doesChemicalExist(chemName){
         return this.#chemMap.has(chemName);
     }
@@ -162,6 +164,7 @@ removeChemEntryBtn.addEventListener("click", removeLastChemEntry);
 
 let submitQueryBtn = document.getElementById("submit-query-btn");
 let clearQueryBtn = document.getElementById("clear-query-btn");
+clearQueryBtn.addEventListener("click",clearQuery);
 
 let sortDisplayBtn = document.getElementById("sort-display-btn");
 let clearDisplayBtn = document.getElementById("clear-display-btn");
@@ -211,24 +214,24 @@ function enterRemoveContext(){
 function buildChemNameInputHTML(chemEntryNumber){
     return `<div class="input-group pb-1 chem-name-container">
         <label class="input-group-text " for="chem${chemEntryNumber}-name">Chem${chemEntryNumber}:</label>
-        <input id="chem${chemEntryNumber}-name" class="form-control" type="text" placeholder="---">
+        <input id="chem${chemEntryNumber}-name" name="chem${chemEntryNumber}Name" class="form-control query-input" type="text" placeholder="---">
     </div>`;
 }
 
 function buildChemBoundsInputHTML(chemEntryNumber){
     return `<div class="input-group pb-1 min-bound-container">
             <label class="input-group-text" for="chem${chemEntryNumber}-min-bound">Min:</label>
-            <input id="chem${chemEntryNumber}-min-bound" class="form-control chem-bound" type="number" placeholder="---" min="1" size="3">
+            <input id="chem${chemEntryNumber}-min-bound" name="chem${chemEntryNumber}MinBound" class="form-control query-input chem-bound" type="number" placeholder="---" min="1" size="3">
         </div>
         <div class="input-group max-bound-container">
             <label class="input-group-text " for="chem${chemEntryNumber}-max-bound">Max:</label>
-            <input id="chem${chemEntryNumber}-max-bound" class="form-control chem-bound" type="number" placeholder="---" min="1" size="3">
+            <input id="chem${chemEntryNumber}-max-bound" name="chem${chemEntryNumber}MaxBound" class="form-control query-input chem-bound" type="number" placeholder="---" min="1" size="3">
         </div>`;
 }
 
 function buildChemValueInputHTML(chemEntryNumber){
     return `<label class="input-group-text " for="chem${chemEntryNumber}-value">Qty:</label>
-        <input id="chem${chemEntryNumber}-value" class="form-control chem-value" type="number" placeholder="---" min="1">`;
+        <input id="chem${chemEntryNumber}-value" name="chem${chemEntryNumber}Value" class="form-control query-input chem-value" type="number" placeholder="---" min="1">`;
 }
 
 function buildChemEntryHTML(newChemEntryNumber){
@@ -378,4 +381,57 @@ function SortChemsByQuantityInAscendingOrder(nameValuePairArry){
 
 
 //Submission & Clear functions
+function clearQuery(){
+    let queryInputCollection = document.getElementsByClassName("query-input");
+    queryInputCollection.forEach((element) => { element.value =""; });
+}
 
+function clearLog(){
+    
+}
+
+function logSearchAction(ingredientName, chemArray){
+
+}
+
+function logAddAction(ingredientName, chemArray){
+
+}
+
+function logRemoveAction(ingredientName, chemArray){
+
+}
+
+function buildLogHTML(){
+    
+}
+
+function submitQueryForm(){
+    //Read Query data: Get ingredient name and chem entry data
+    let ingredientName = document.getElementsByName("ingredientName").value;
+    let chemEntryCollection = document.getElementsByClassName("chem-entry");
+
+    if (queryContext === "search"){
+        //read each chem name and bound data
+
+        //display all ingredients that match
+
+        //Log the action to the output area
+
+    }
+    else if (queryContext === "add"){
+        //read each chem name and value data
+
+        //Add ingredient to data collection if an ingredient was provided
+
+        //Log action to the output area
+    }
+    else if (queryContext === "remove"){
+        //read each chem name
+
+        //Remove ingredient if it exists
+
+        //Log action to the output area
+    }
+
+}
