@@ -102,7 +102,7 @@ class Ingredient{
         //Check each match. 
         //Add any pairs whose values fall within the bounds to the output arry
         for (let i = 0; i < unboundMatches.length; i ++){
-            if (minValue <= unboundMatches[i][1] <= maxValue)
+            if ((minValue <= unboundMatches[i][1]) && ( unboundMatches[i][1] <= maxValue))
                 matchingPairsWithinBounds.push(unboundMatches[i]);
         }
 
@@ -153,7 +153,7 @@ removeChemEntryBtn.addEventListener("click", removeLastChemEntry);
 
 
 let submitQueryBtn = document.getElementById("submit-query-btn");
-submitQueryBtn.addEventListener("click", testIngredientChemSearching);
+submitQueryBtn.addEventListener("click", testIngredientChemBoundSearching);
 let clearQueryBtn = document.getElementById("clear-query-btn");
 clearQueryBtn.addEventListener("click",clearQuery);
 
@@ -497,7 +497,7 @@ function buildTestIngredient(){
     chemMap.set("salt",1);
     chemMap.set("water",2);
     chemMap.set("saltwater",3);
-    chemMap.set("cee",4);
+    chemMap.set("cee",20);
     
     chemMap.set(41, "invalid Number");
     chemMap.set("DEE");
@@ -558,7 +558,6 @@ function testRemovingDataFromIngredient(){
 
 function testIngredientChemSearching(){
     let ingredient = buildTestIngredient();
-    logIngredient(ingredient);
 
     let universalSubstring="";
     let substring = "salt";
@@ -578,4 +577,30 @@ function testIngredientChemSearching(){
     ${ingredient.getChemicalPairsViaSubstring(nullChem)}\nEnd of search`);
 
 
+}
+
+function testIngredientChemBoundSearching(){
+    let ingredient = buildTestIngredient();
+
+    let universalSubstring="";
+    let substring = "salt";
+    let nonexistentSubstring = "NonExistent Chem";
+    let undefinedChem;
+    let nullChem = null;
+
+    let minBound = 2;
+    let maxBound = 3;
+
+    console.log(`Searching for a chems with universal substring '${universalSubstring}' in ingredient (Bounds:(${minBound},${maxBound})):\nResults:\n
+    ${ingredient.getChemicalPairsViaSubstringAndBounds(universalSubstring,minBound,maxBound)}\nEnd of search`);
+    console.log(`Searching for a chems with substring '${substring}' in ingredient (Bounds:(${minBound},${maxBound})):\nResults:\n
+    ${ingredient.getChemicalPairsViaSubstringAndBounds(substring,minBound,maxBound)}\nEnd of search`);
+    console.log(`Searching for a chems with nonexistent substring '${nonexistentSubstring}' in ingredient (Bounds:(${minBound},${maxBound})):\nResults:\n
+    ${ingredient.getChemicalPairsViaSubstringAndBounds(nonexistentSubstring,minBound,maxBound)}\nEnd of search`);
+    console.log(`Searching for a chems with undefined substring '${undefinedChem}' in ingredient (Bounds:(${minBound},${maxBound})):\nResults:\n
+    ${ingredient.getChemicalPairsViaSubstringAndBounds(undefinedChem,minBound,maxBound)}\nEnd of search`);
+    console.log(`Searching for a chems with null substring '${nullChem}' in ingredient (Bounds:(${minBound},${maxBound})):\nResults:\n
+    ${ingredient.getChemicalPairsViaSubstringAndBounds(nullChem,minBound,maxBound)}\nEnd of search`);
+
+    
 }
