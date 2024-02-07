@@ -5,24 +5,26 @@ class Ingredient{
 
     //chemMap is a Map of (chemicalName, quantity) pairs
     constructor(name, chemMap){
-        let isStringValid = isStringValid(name);
-        let isMapValid = isMapValid(chemMap);
+        let isNameValid = isStringValid(name) && !isStringEmpty(name);
+        let isChemMapValid = isMapValid(chemMap);
 
-        if ( isStringValid && isMapValid)
+        if ( isNameValid && isChemMapValid)
         {
             this.#name = name.toLowerCase();
+            let chemEntriesArry = [...chemMap.entries()]
 
             //further validate the Map. Only add valid chemical entries, and make the names lower case
-            chemMap.array.forEach((value,key,map) => {
-                if (isStringValid(key) && isNumberValid(value))
-                    this.#chemMap.set(key.toLowerCase(),value);
-            });
+            for (let i = 0; i < chemEntriesArry.length; i++){
+
+                if (isStringValid(chemEntriesArry[i][0]) && isNumberValid(chemEntriesArry[i][1]))
+                    this.#chemMap.set(chemEntriesArry[i][0].toLowerCase(),chemEntriesArry[i][1]);
+            };
 
         }
         else { 
-            if ( !isStringValid && !isMapValid)
+            if ( !isNameValid && !isChemMapValid)
                 console.log(`invalid name AND map detected in Ingredient Constructor (name,map): (${name}, ${chemMap})`);
-            else if (!isStringValid)
+            else if (!isNameValid)
                 console.log(`invalid name detected in Ingredient Constructor: ${name}`);
             
             else console.log(`invalid map detected in Ingredient Constructor: ${chemMap}`);
@@ -39,14 +41,14 @@ class Ingredient{
     }
 
     addChemical(name,value){
-        let isStringValid = isStringValid(name);
-        let isNumberValid = isNumberValid(value);  
-        if ( isStringValid && isNumberValid)
+        let isNameValid = isStringValid(name) && !isStringEmpty(name);
+        let isValueValid = isNumberValid(value);  
+        if ( isNameValid && isValueValid)
             this.#chemMap.set(name,value);
         else{
-            if ( !isStringValid && !isNumberValid)
-                console.log(`invalid name AND value while adding chemical (name,value): (${name}, ${value})`);
-            else if (!isStringValid)
+            if ( !isNameValid && !isValueValid)
+                console.log(`invalid name AND value detected while adding chemical (name,value): (${name}, ${value})`);
+            else if (!isNameValid)
                 console.log(`invalid name detected while adding Chemical: ${name}`);
             
             else console.log(`invalid value detected while adding Chemical: ${value}`);
@@ -56,7 +58,7 @@ class Ingredient{
 
     removeChemical(name){
         if (this.doesChemicalExist(name))
-            this.#chemMap.remove(name);
+            this.#chemMap.delete(name);
     }
 
     getChemicalValuePair(name){
@@ -69,11 +71,11 @@ class Ingredient{
         //Validate the string
         if (!isStringValid(substring)){
             console.log(`invalid substring detected while getting chemical pairs: ${substring}`);
-            return;
+            return [];
         }
 
         //Get the chemical names, sorted
-        let allChemicalNames = this.#chemMap.keys().sort();
+        let allChemicalNames = [...this.#chemMap.keys()].sort();
         
 
         //Build the output arry
@@ -106,18 +108,6 @@ class Ingredient{
 
         //return the output arry
         return matchingPairsWithinBounds;
-    }
-
-    static isStringValid(name){
-        return name !== null && typeof name === 'string' && name !== undefined;
-    }
-
-    static isNumberValid(value){
-        return value !== null && typeof value === "number"  && value !== undefined;
-    }
-
-    static isMapValid(mapParameter){
-        return mapParameter !== null && mapParameter instanceof Map  && mapParameter !== undefined;
     }
 }
 
@@ -163,6 +153,7 @@ removeChemEntryBtn.addEventListener("click", removeLastChemEntry);
 
 
 let submitQueryBtn = document.getElementById("submit-query-btn");
+submitQueryBtn.addEventListener("click", testIngredientChemSearching);
 let clearQueryBtn = document.getElementById("clear-query-btn");
 clearQueryBtn.addEventListener("click",clearQuery);
 
@@ -184,6 +175,25 @@ let logOutputDisplay = document.getElementById("log-output");
 
 
 // Helper Functions
+//Validation related
+function isStringValid(name){
+    return name !== null && typeof name === 'string' && name !== undefined;
+}
+
+function isNumberValid(value){
+    return value !== null && typeof value === "number"  && value !== undefined;
+}
+
+function isMapValid(mapParameter){
+    return mapParameter !== null && mapParameter instanceof Map  && mapParameter !== undefined;
+}
+
+function isStringEmpty(name){
+    return name ==="";
+}
+
+
+
 //Query-context related
 function enterSearchContext(){
     if (queryContext !== "search"){
@@ -383,7 +393,8 @@ function SortChemsByQuantityInAscendingOrder(nameValuePairArry){
 //Submission & Clear functions
 function clearQuery(){
     let queryInputCollection = document.getElementsByClassName("query-input");
-    queryInputCollection.forEach((element) => { element.value =""; });
+    for (let i = 0; i < queryInputCollection.length; i++)
+        queryInputCollection[i].value = "";
 }
 
 function clearLog(){
@@ -433,5 +444,138 @@ function submitQueryForm(){
 
         //Log action to the output area
     }
+
+}
+
+
+
+//Debugging utilities
+function logIngredient(ingredient){
+    console.log(
+        `Logging Ingredient: \n
+        Name: ${ingredient.name}\n
+        Chemicals: ${ingredient.chemicalValuePairs}\n
+        End of Ingredient`);
+}
+
+function testStringValidation(){
+    let undefinedString;
+    let nullString = null;
+    let emptyString = '';
+    let validString = "I'm a valid string, I swear!";
+    let nonstringDataType = 0;
+    console.log(
+        `Testing string validation...\n
+        Is undefined variable valid: ${Ingredient.isStringValid(undefinedString)} (expected: False)\n
+        Is null variable valid: ${Ingredient.isStringValid(nullString)} (expected: False)\n
+        Is empty string valid: ${Ingredient.isStringValid(emptyString)} (expected: False)\n
+        Is valid string valid: ${Ingredient.isStringValid(validString)} (expected: True)\n
+        Is nonstring data type valid: ${Ingredient.isStringValid(nonstringDataType)} (expected: False)\n
+        End of string validation test`);
+}
+
+function testMapValidation(){
+    let undefinedMap;
+    let nullMap = null;
+    let emptyMap = new Map();
+    let validMap = new Map().set(["Salt",9]);
+    let nonMapDataType = 0;
+
+    console.log(
+        `Testing map validation...\n
+        Is undefined variable valid: ${Ingredient.isMapValid(undefinedMap)} (expected: False)\n
+        Is null variable valid: ${Ingredient.isMapValid(nullMap)} (expected: False)\n
+        Is empty map valid: ${Ingredient.isMapValid(emptyMap)} (expected: True)\n
+        Is valid map valid: ${Ingredient.isMapValid(validMap)} (expected: True)\n
+        Is nonMap data type valid: ${Ingredient.isMapValid(nonMapDataType)} (expected: False)\n
+        End of string validation test`);
+}
+
+function buildTestIngredient(){
+    let name = "test ingredient";
+    let chemMap = new Map();
+    chemMap.set("salt",1);
+    chemMap.set("water",2);
+    chemMap.set("saltwater",3);
+    chemMap.set("cee",4);
+    
+    chemMap.set(41, "invalid Number");
+    chemMap.set("DEE");
+    //console.log(`chemMap: ${[...chemMap.entries()]}\nsize: ${chemMap.size}`);
+    //console.log(`chemMap entry 1: ${[...chemMap.entries()][0]}`);
+
+    let ingredient = new Ingredient(name,chemMap);
+    logIngredient(ingredient);
+    return ingredient;
+}
+
+function testAddingDataToIngredient(){
+    let ingredient= buildTestIngredient();
+
+    let validChemName = "test Chem";
+    let validValue = 4;
+
+    let invalidChemName = "";
+    let invalidValue = "four";
+
+    console.log("Attempting to add Invalid Data to ingredient...");
+    ingredient.addChemical(validChemName,invalidValue);
+    ingredient.addChemical(invalidChemName,validValue);
+    ingredient.addChemical();
+    ingredient.addChemical(null,null);
+    logIngredient(ingredient);
+    
+    console.log("adding valid data to ingredient...");
+    ingredient.addChemical(validChemName,validValue);
+    logIngredient(ingredient);
+
+    console.log("updating preexisting value within ingredient...");
+    ingredient.addChemical(validChemName, 100);
+    logIngredient(ingredient);
+
+
+}
+
+function testRemovingDataFromIngredient(){
+    let ingredient= buildTestIngredient();
+
+    let validChemName = "cee";
+    let validValue = 4;
+
+    let invalidChemName = "";
+    let invalidValue = "four";
+
+    console.log("attempting to remove nonexistent items from ingredient...");
+    ingredient.removeChemical(invalidChemName);
+    ingredient.removeChemical(null);
+    ingredient.removeChemical();
+    logIngredient(ingredient);
+
+    console.log("removing item 'cee' from ingredient...");
+    ingredient.removeChemical("cee");
+    logIngredient(ingredient);
+}
+
+function testIngredientChemSearching(){
+    let ingredient = buildTestIngredient();
+    logIngredient(ingredient);
+
+    let universalSubstring="";
+    let substring = "salt";
+    let nonexistentSubstring = "NonExistent Chem";
+    let undefinedChem;
+    let nullChem = null;
+
+    console.log(`Searching for a chems with universal substring '${universalSubstring}' in ingredient:\nResults:\n
+    ${ingredient.getChemicalPairsViaSubstring(universalSubstring)}\nEnd of search`);
+    console.log(`Searching for a chems with substring '${substring}' in ingredient:\nResults:\n
+    ${ingredient.getChemicalPairsViaSubstring(substring)}\nEnd of search`);
+    console.log(`Searching for a chems with nonexistent substring '${nonexistentSubstring}' in ingredient:\nResults:\n
+    ${ingredient.getChemicalPairsViaSubstring(nonexistentSubstring)}\nEnd of search`);
+    console.log(`Searching for a chems with undefined substring '${undefinedChem}' in ingredient:\nResults:\n
+    ${ingredient.getChemicalPairsViaSubstring(undefinedChem)}\nEnd of search`);
+    console.log(`Searching for a chems with null substring '${nullChem}' in ingredient:\nResults:\n
+    ${ingredient.getChemicalPairsViaSubstring(nullChem)}\nEnd of search`);
+
 
 }
