@@ -111,14 +111,23 @@ class Ingredient{
     }
 }
 
-
+class ChemicalEntryData{
+    name = '';
+    value = 0;
+    minBound=0;
+    maxBound=9;
+}
 
 //Internal state-tracking Declarations
 let ingredientCollection = [];
+let displayedIngredientCollection = [];
 let queryContext = "search";
 let sortStyle = "alphabetical";
 let chemicalEntriesCount = 0;
-let ingredientsOnDisplay = 0;
+let ingredientsOnDisplayCount = 0;
+let queryIngredientName ='';
+let chemicalQueryData = [];
+
 
 
 
@@ -153,7 +162,7 @@ removeChemEntryBtn.addEventListener("click", removeLastChemEntry);
 
 
 let submitQueryBtn = document.getElementById("submit-query-btn");
-submitQueryBtn.addEventListener("click", testIngredientChemBoundSearching);
+submitQueryBtn.addEventListener("click", submitQueryForm);
 let clearQueryBtn = document.getElementById("clear-query-btn");
 clearQueryBtn.addEventListener("click",clearQuery);
 
@@ -417,29 +426,71 @@ function buildLogHTML(){
     
 }
 
+function readChemicalQueryData(chemEntryCollection){
+    //Clear the old query
+    chemicalQueryData.length = 0;
+
+    for (let i=0; i < chemEntryCollection.length; i++){
+        //Build a new chem query object
+        let chemData = new ChemicalEntryData;
+
+        //Validate and read the name, numbers, and values
+        let chemName = document.getElementById(`chem${i + 1}-name`).value;
+        if (isStringValid(chemName))
+            chemData.name = chemName;
+
+        if (document.getElementById(`chem${i + 1}-value`) !== null){
+            let chemValue = document.getElementById(`chem${i + 1}-value`).value;
+            chemData.value = chemValue;
+        }
+        
+        if (document.getElementById(`chem${i + 1}-min-bound`) !== null){
+            let chemMinBound = document.getElementById(`chem${i + 1}-min-bound`).value;
+            chemData.minBound = chemMinBound;
+        }
+        
+        if (document.getElementById(`chem${i + 1}-max-bound`) !== null){
+            let chemMaxBound = document.getElementById(`chem${i + 1}-max-bound`).value;
+            chemData.maxBound = chemMaxBound;
+        }
+
+
+        //Add the data to the query collection
+        chemicalQueryData.push(chemData);
+        
+    }
+}
+
 function submitQueryForm(){
     //Read Query data: Get ingredient name and chem entry data
-    let ingredientName = document.getElementsByName("ingredientName").value;
+    let ingredientName = document.getElementById("ingredient-name-input").value;
     let chemEntryCollection = document.getElementsByClassName("chem-entry");
+    console.log(`${chemEntryCollection.length} eentries collected`);
+
+    //Validate ingredient name
+    if (!isStringValid(ingredientName))
+        ingredientName = '';
+
+    //Add ingredient name to the query
+    queryIngredientName = ingredientName;
+
+    //Read chemical query data
+    readChemicalQueryData(chemEntryCollection);
+
+    logQueryData();
 
     if (queryContext === "search"){
-        //read each chem name and bound data
-
         //display all ingredients that match
 
         //Log the action to the output area
 
     }
     else if (queryContext === "add"){
-        //read each chem name and value data
-
         //Add ingredient to data collection if an ingredient was provided
 
         //Log action to the output area
     }
     else if (queryContext === "remove"){
-        //read each chem name
-
         //Remove ingredient if it exists
 
         //Log action to the output area
@@ -603,4 +654,29 @@ function testIngredientChemBoundSearching(){
     ${ingredient.getChemicalPairsViaSubstringAndBounds(nullChem,minBound,maxBound)}\nEnd of search`);
 
     
+}
+
+function logQueryData(){
+    let entryLogString = '';
+
+    for (let i=0; i < chemicalQueryData.length; i++){
+        //create the name component of this substring
+        let chemDataString = `${i+1}) ChemName : ${chemicalQueryData[i].name}\n`;
+
+        //create the value component
+        chemDataString += `${i+1}) Value : ${chemicalQueryData[i].value}\n`;
+
+        //create the min and max bound components
+        chemDataString += `${i+1}) MinBound : ${chemicalQueryData[i].minBound}\n`;
+        chemDataString += `${i+1}) MaxBound : ${chemicalQueryData[i].maxBound}\n`;
+
+        //Apply this substring to the main logString
+        entryLogString += chemDataString;
+    }
+
+    console.log(`
+    Current Query:\n
+    Ingredient: ${queryIngredientName}\n
+    Chemical Entries: \n` 
+    + `${entryLogString}`)
 }
