@@ -121,12 +121,12 @@ class ChemicalEntryData{
 //Internal state-tracking Declarations
 let ingredientCollection = [];
 let displayedIngredientCollection = [];
-let queryContext = "search";
-let sortStyle = "alphabetical";
-let chemicalEntriesCount = 0;
 let ingredientsOnDisplayCount = 0;
+let chemicalEntriesCount = 0;
 let queryIngredientName ='';
 let chemicalQueryData = [];
+let queryContext = "search";
+let sortStyle = "alphabetical";
 
 
 
@@ -162,12 +162,13 @@ removeChemEntryBtn.addEventListener("click", removeLastChemEntry);
 
 
 let submitQueryBtn = document.getElementById("submit-query-btn");
-submitQueryBtn.addEventListener("click", submitQueryForm);
+submitQueryBtn.addEventListener("click", testAddingTableElements);
 let clearQueryBtn = document.getElementById("clear-query-btn");
 clearQueryBtn.addEventListener("click",clearQuery);
 
 let sortDisplayBtn = document.getElementById("sort-display-btn");
 let clearDisplayBtn = document.getElementById("clear-display-btn");
+clearDisplayBtn.addEventListener("click",clearDisplay);
 
 
 
@@ -347,6 +348,222 @@ function addChemValueInputs(){
 }
 
 
+
+//Table-related utilities
+/*
+function buildTableEntryHtml(entryIndex, ingredient){
+
+    //Begin building the html string
+    let tableEntryHtml = '';
+
+    //cache the array of chemical entries
+    let chemValuePairArry = ingredient.chemicalValuePairs;
+
+    for (let i = 0; i < chemValuePairArry.length; i++){
+
+        //Build the ingredient row if it's the first iteration
+        if (i === 0){
+            tableEntryHtml += `<tr class="ingredient-row chemical-row">
+            <td class="index-cell">${entryIndex}</td>
+            <td class="ingredient-cell">${ingredient.name}</td>
+            <td class="chemical-cell">${chemValuePairArry[i][0]}</td>
+            <td class="value-cell">${chemValuePairArry[i][1]}</td>
+        </tr>`;
+            
+        }
+
+
+        //Otherwise build a chemical row
+        else {
+            tableEntryHtml += `<tr class="chemical-row">
+            <td class="index-cell">${entryIndex}</td>
+            <td class="ingredient-cell"></td>
+            <td class="chemical-cell">${chemValuePairArry[i][0]}</td>
+            <td class="value-cell">${chemValuePairArry[i][1]}</td>
+        </tr>`;
+            
+        }
+    }
+
+    //return the html string
+    return tableEntryHtml;
+}
+
+function createTableElement(ingredient){
+    //Make sure the ingredient is valid
+    if (ingredient === null || ingredient === undefined)
+        return;
+
+    //Create new empty element
+    let newTableEntry = document.createElement("div");
+
+    //Update the element's attributes into a useable container
+    newTableEntry.setAttribute("id",`table-entry${ingredientsOnDisplayCount + 1}`);
+    newTableEntry.setAttribute("class","table-entry");
+
+    //Add the element to the table
+    displayTableBody.append(newTableEntry);
+
+    //Build the element's inner HTML
+    newTableEntry.innerHTML= buildTableEntryHtml(ingredientsOnDisplayCount + 1, ingredient);
+
+    //update the internal display count
+    ingredientsOnDisplayCount++;
+
+    //Update the displayed count of table items
+    currentTablePopulationDisplay.value = ingredientsOnDisplayCount;
+
+    //add ingredient to the internally-cached display collection
+    displayedIngredientCollection.push(ingredient);
+}
+
+function removeTableElement(entryIndex){
+    
+    //Make sure this entry exists
+    let tableEntry = document.getElementById(`table-entry${entryIndex}`);
+    if (tableEntry === null)
+        return;
+
+    //Identify this entry's ingredient: look at the "ingredient-cell"'s value
+    let ingredientName = tableEntry.getElementsByClassName('ingredient-cell')[0].value;
+    console.log(`Removing ingredient: ${ingredientName}`);
+
+    //remove the entry from the table
+    tableEntry.remove();
+
+    //update the internal display count
+    ingredientsOnDisplayCount--;
+
+    //update the displayed count of table items
+    currentTablePopulationDisplay.value = ingredientsOnDisplayCount;
+
+    //Remove the entry from the inernally-cached "Ingredients on display" collection
+    for (let i=0; i < displayedIngredientCollection.length; i++){
+        if (ingredientName === displayedIngredientCollection[i].name){
+            console.log(`table display arry before deletion @ index ${i}:\n ${displayedIngredientCollection}`);
+            displayedIngredientCollection.splice(i,1);
+            console.log(`after deletion @ index ${i}:\n ${displayedIngredientCollection}`);
+            break;
+        }
+    }
+
+}
+
+function clearAllTableEntries(){
+    //remove each table entry
+    for (let i=0; i < ingredientsOnDisplayCount; i++){
+        removeTableElement(i+1);
+    }
+}
+*/
+
+function createIngredientRowElement(entryIndex,ingredientName, chemValuePair){
+    //create the new table element
+    let newTableRow = document.createElement("tr");
+
+    //Update the element's attributes into a valid ingredientRow
+    newTableRow.setAttribute("class","ingredient-row table-row");
+
+    //create the element's innerHtml
+    let tableEntryHtml = `<td class="index-cell">${entryIndex}</td>
+            <td class="ingredient-cell">${ingredientName}</td>
+            <td class="chemical-cell">${chemValuePair[0]}</td>
+            <td class="value-cell">${chemValuePair[1]}</td>`;
+
+    //Setup the element's inner HTML
+    newTableRow.innerHTML = tableEntryHtml;
+
+    //Append the row onto the table
+    displayTableBody.append(newTableRow);
+}
+
+function createChemicalRowElement(entryIndex,chemValuePair){
+    //create the new table element
+    let newTableRow = document.createElement("tr");
+
+    //Update the element's attributes into a valid ingredientRow
+    newTableRow.setAttribute("class","chemical-row table-row");
+  
+    //create the element's innerHtml
+    let tableEntryHtml = `<td class="index-cell">${entryIndex}</td>
+            <td class="ingredient-cell"></td>
+            <td class="chemical-cell">${chemValuePair[0]}</td>
+            <td class="value-cell">${chemValuePair[1]}</td>`;
+
+    //Setup the element's inner HTML
+    newTableRow.innerHTML = tableEntryHtml;
+
+    //Append the row onto the table
+    displayTableBody.append(newTableRow);
+}
+
+function displayIngredient(ingredient){
+    //Validate our ingredient
+    if (ingredient === null || ingredient === undefined){
+        return;
+    }
+
+    //Cache the chem value pairs
+    let chemValuePairsArry = ingredient.chemicalValuePairs;
+
+    //infer this ingredient's display index. Cached for clarity
+    let entryIndex = ingredientsOnDisplayCount + 1; // Start counting at 1, for user readability
+
+
+    //Build a row for each chemical entry
+    for (let i =0; i < chemValuePairsArry.length; i++){
+
+        //The first row of each ingredient is unique: an Ingredient row
+        if (i === 0){
+            createIngredientRowElement(entryIndex, ingredient.name, chemValuePairsArry[i]);
+        } 
+
+        //other rows are chemical rows. They're built different.
+        else {
+            createChemicalRowElement(entryIndex,chemValuePairsArry[i]);
+        }
+    }
+
+
+    //Update display Utils
+    ingredientsOnDisplayCount++;
+
+    //Update the displayed count of table items
+    currentTablePopulationDisplay.value = ingredientsOnDisplayCount;
+
+    //Add ingredient to the interal display cache
+    displayedIngredientCollection.push(ingredient);
+
+}
+
+function clearDisplay(){
+    //Get all of the rows
+    let tableRowsArry = [...displayTableBody.getElementsByClassName("table-row")];
+
+    //cache the number of rows
+    let rowCount = tableRowsArry.length;
+    while (rowCount > 0)
+    {
+        //Remove each element
+        tableRowsArry.pop().remove();
+        rowCount--;
+    }
+
+    //Update display Utils
+    ingredientsOnDisplayCount=0;
+
+    //Update the displayed count of table items
+    currentTablePopulationDisplay.value = ingredientsOnDisplayCount;
+
+    //Clear the internal ingredient display collection
+    displayedIngredientCollection.length = 0;
+}
+
+
+
+
+
+
 //Sorting functions
 function SortChemsByQuantityInAscendingOrder(nameValuePairArry){
 
@@ -397,6 +614,7 @@ function SortChemsByQuantityInAscendingOrder(nameValuePairArry){
         }
     }
 }
+
 
 
 //Submission & Clear functions
@@ -679,4 +897,16 @@ function logQueryData(){
     Ingredient: ${queryIngredientName}\n
     Chemical Entries: \n` 
     + `${entryLogString}`)
+}
+
+
+function testAddingTableElements(){
+    let ingredient = buildTestIngredient();
+
+
+    console.log('Adding test ingredient to table...');
+    displayIngredient(ingredient);
+}
+
+function testRemovingTableElements(){
 }
