@@ -15,9 +15,25 @@ class Ingredient{
 
             //further validate the Map. Only add valid chemical entries, and make the names lower case
             for (let i = 0; i < chemEntriesArry.length; i++){
-
-                if (isStringValid(chemEntriesArry[i][0]) && isNumberValid(chemEntriesArry[i][1]))
+                let isChemValid = isStringValid(chemEntriesArry[i][0]);
+                let isValueValid = isNumberValid(chemEntriesArry[i][1]);
+                if ( isChemValid && isValueValid){
                     this.#chemMap.set(chemEntriesArry[i][0].toLowerCase(),chemEntriesArry[i][1]);
+                    console.log(`[${chemEntriesArry[i][0]},${chemEntriesArry[i][1]}] added successfully`);
+                }
+                else {
+                    if (!isValueValid && !isChemValid){
+                        console.log(`Neither chemical:${chemEntriesArry[i][0]} nor value:${chemEntriesArry[i][1]} are valid chem,value entries`);
+                    }
+                    else if (!isChemValid){
+                        console.log(`Chemical:${chemEntriesArry[i][0]} isn't a valid chem entry`);
+                    }
+                    else {
+                        console.log(`Value:${chemEntriesArry[i][1]} isn't a valid value entry`);
+                    }
+                    
+                }
+                    
             };
 
         }
@@ -113,9 +129,9 @@ class Ingredient{
 
 class ChemicalEntryData{
     name = '';
-    value = 0;
-    minBound=0;
-    maxBound=9;
+    value = 1;
+    minBound=1;
+    maxBound=Number.MAX_VALUE;
 }
 
 //Internal state-tracking Declarations
@@ -162,7 +178,7 @@ removeChemEntryBtn.addEventListener("click", removeLastChemEntry);
 
 
 let submitQueryBtn = document.getElementById("submit-query-btn");
-submitQueryBtn.addEventListener("click", testAddingTableElements);
+submitQueryBtn.addEventListener("click", submitQueryForm);
 let clearQueryBtn = document.getElementById("clear-query-btn");
 clearQueryBtn.addEventListener("click",clearQuery);
 
@@ -251,7 +267,7 @@ function buildChemBoundsInputHTML(chemEntryNumber){
 
 function buildChemValueInputHTML(chemEntryNumber){
     return `<label class="input-group-text " for="chem${chemEntryNumber}-value">Qty:</label>
-        <input id="chem${chemEntryNumber}-value" name="chem${chemEntryNumber}Value" class="form-control query-input chem-value" type="number" placeholder="---" min="1">`;
+        <input id="chem${chemEntryNumber}-value" name="chem${chemEntryNumber}Value" class="form-control query-input chem-value" type="number" placeholder="1" min="1">`;
 }
 
 function buildChemEntryHTML(newChemEntryNumber){
@@ -350,7 +366,7 @@ function addChemValueInputs(){
 
 
 //Table-related utilities
-/*
+/* Incorrect Table-Element Building Implementations
 function buildTableEntryHtml(entryIndex, ingredient){
 
     //Begin building the html string
@@ -529,7 +545,7 @@ function displayIngredient(ingredient){
     ingredientsOnDisplayCount++;
 
     //Update the displayed count of table items
-    currentTablePopulationDisplay.value = ingredientsOnDisplayCount;
+    currentTablePopulationDisplay.innerText = ingredientsOnDisplayCount;
 
     //Add ingredient to the interal display cache
     displayedIngredientCollection.push(ingredient);
@@ -553,7 +569,7 @@ function clearDisplay(){
     ingredientsOnDisplayCount=0;
 
     //Update the displayed count of table items
-    currentTablePopulationDisplay.value = ingredientsOnDisplayCount;
+    currentTablePopulationDisplay.innerText = ingredientsOnDisplayCount;
 
     //Clear the internal ingredient display collection
     displayedIngredientCollection.length = 0;
@@ -653,23 +669,44 @@ function readChemicalQueryData(chemEntryCollection){
         let chemData = new ChemicalEntryData;
 
         //Validate and read the name, numbers, and values
-        let chemName = document.getElementById(`chem${i + 1}-name`).value;
-        if (isStringValid(chemName))
-            chemData.name = chemName;
+        let chemNameInput = document.getElementById(`chem${i + 1}-name`).value;
+        if (isStringValid(chemNameInput) && !isStringEmpty(chemNameInput))
+            chemData.name = chemNameInput;
+        else {
+            //Do not risk adding any empty chemical entries. Move on to the next entry
+            break;
+        }
 
+        //read the chem value, if it exists
         if (document.getElementById(`chem${i + 1}-value`) !== null){
-            let chemValue = document.getElementById(`chem${i + 1}-value`).value;
-            chemData.value = chemValue;
+            let chemValueInput = Number(document.getElementById(`chem${i + 1}-value`).value);
+
+            //default the value to 1
+            chemValueInput = Math.max(1,chemValueInput);
+
+            //accept the value
+            chemData.value = chemValueInput;
         }
         
-        if (document.getElementById(`chem${i + 1}-min-bound`) !== null){
-            let chemMinBound = document.getElementById(`chem${i + 1}-min-bound`).value;
-            chemData.minBound = chemMinBound;
-        }
-        
-        if (document.getElementById(`chem${i + 1}-max-bound`) !== null){
-            let chemMaxBound = document.getElementById(`chem${i + 1}-max-bound`).value;
-            chemData.maxBound = chemMaxBound;
+        //read the bounds inputs, if they exist
+        if (document.getElementById(`chem${i + 1}-min-bound`) !== null && document.getElementById(`chem${i + 1}-max-bound`) !== null){
+            let chemMinBoundInput = Number(document.getElementById(`chem${i + 1}-min-bound`).value);
+            let chemMaxBoundInput = Number(document.getElementById(`chem${i + 1}-max-bound`).value);
+
+            //default the minBound to 1
+            chemMinBoundInput = Math.max(1,chemMinBoundInput); //MinBound will always be >= 1
+
+            //default the maxBound to MAX if it's current value is 0 (due to being left empty)
+            if (chemMaxBoundInput === 0){
+                chemMaxBoundInput = Number.MAX_VALUE;
+            }
+
+            //Otherwise, make the maxBound ALWAYS >= minBound
+            chemMaxBoundInput = Math.max(chemMinBoundInput,chemMaxBoundInput);
+
+            //accept the bounding values
+            chemData.minBound = chemMinBoundInput;
+            chemData.maxBound = chemMaxBoundInput;
         }
 
 
@@ -680,6 +717,7 @@ function readChemicalQueryData(chemEntryCollection){
 }
 
 function submitQueryForm(){
+
     //Read Query data: Get ingredient name and chem entry data
     let ingredientName = document.getElementById("ingredient-name-input").value;
     let chemEntryCollection = document.getElementsByClassName("chem-entry");
@@ -698,24 +736,208 @@ function submitQueryForm(){
     logQueryData();
 
     if (queryContext === "search"){
-        //display all ingredients that match
+
+        //find all ingredients that match the query
+        let ingredientMatches = getAllMatchingIngredients();
+
+        console.log([...ingredientMatches]);
+
+        //clear the display
+        clearDisplay();
+
+        //display all matching ingredients
+        for (let i=0; i < ingredientMatches.length;i++){
+            displayIngredient(ingredientMatches[i]);
+        }
 
         //Log the action to the output area
 
     }
     else if (queryContext === "add"){
-        //Add ingredient to data collection if an ingredient was provided
+        
+        if (queryIngredientName !== '')
+        {
+            //Add ingredient to data collection
+            addQueryIngredientToCollection();
 
-        //Log action to the output area
+            //Log action to the output area
+
+        }
+        else {
+            alert("Provide an Ingredient Name before submitting an Add query.");
+        }
     }
     else if (queryContext === "remove"){
-        //Remove ingredient if it exists
 
-        //Log action to the output area
+        if (queryIngredientName !== '')
+        {
+            //Perform the contextual remove operation
+            performRemovalQuery();
+
+            //Log action to the output area
+
+        }
+        else {
+            alert("Provide an Ingredient Name before submitting a Remove query.");
+        }
     }
 
 }
 
+function getAllMatchingIngredients(){
+    //Build the collection to hold the matches
+    let ingredientMatches = [];
+
+    //Look at each stored ingredient
+    for (let i =0; i < ingredientCollection.length;i++){
+
+        //First determine if the name matches 
+        if (ingredientCollection[i].name.includes(queryIngredientName)){
+
+            //simply return the match if no chemicals were specified
+            if (chemicalQueryData.length === 0){
+                ingredientMatches.push(ingredientCollection[i]);
+            }
+
+            
+            else {
+            
+                //Otherwise, determine if each queried chem exists in this ingredient
+                //set a flag to hold our ingredient's validity
+                let doAllChemsExist = true;
+
+                //Get each chem in this ingredient
+                let ingredientChems = ingredientCollection[i].chemicalValuePairs;
+
+                //Check if each chemical query exists in this ingredient
+                for (let j =0; j < chemicalQueryData.length; j++){
+                    doAllChemsExist = doesIngredientContainChemical(
+                        ingredientCollection[i],
+                        chemicalQueryData[j].name,
+                        chemicalQueryData[j].minBound,
+                        chemicalQueryData[j].maxBound);
+                    
+                    if (!doAllChemsExist){
+                        break;
+                    }
+                }
+
+                //Add the ingredient if all chems exist
+                if (doAllChemsExist){
+                    ingredientMatches.push(ingredientCollection[i]);
+                }
+            }
+
+            
+        }
+    }
+
+    //return the matching ingredients
+    return ingredientMatches;
+}
+
+function doesIngredientContainChemical(ingredient, chem, minBound,maxBound){
+
+    let matches = ingredient.getChemicalPairsViaSubstringAndBounds(chem,minBound,maxBound);
+    return matches.length > 0;
+}
+
+function getIngredientFromCollection(ingredientName){
+    
+    //make sure the ingredient exists
+    if (doesIngredientExistInCollection(ingredientName)){
+
+        for (let i=0; i< ingredientCollection.length; i++){
+            if (ingredientCollection[i].name === ingredientName)
+                return ingredientCollection[i];
+        }
+    }
+
+    //otherwise return null
+    else return null;
+}
+
+function addQueryIngredientToCollection(){
+    //Determine if the ingredient already exists in the collection
+    let doesIngredientAlreadyExist = doesIngredientExistInCollection(queryIngredientName);
+
+    //Update the preexisting ingredient, if it already exists
+    if (doesIngredientAlreadyExist){
+        let ingredient = getIngredientFromCollection(queryIngredientName);
+
+        for (let i=0; i< chemicalQueryData.length; i++){
+            ingredient.addChemical(chemicalQueryData[i].name, chemicalQueryData[i].value);
+        }
+    }
+
+    //Otherwise, build a new ingredient from the query
+    else {
+
+        //create the new ingredient's chemMap
+        let chemMap = new Map();
+        for (let i=0; i< chemicalQueryData.length; i++){
+            console.log(`Attempting to add chemical: [${chemicalQueryData[i].name}, ${chemicalQueryData[i].value}]`);
+            chemMap.set(chemicalQueryData[i].name, chemicalQueryData[i].value);
+        }
+
+        //create the new ingredient
+        let ingredient = new Ingredient(queryIngredientName, chemMap);
+
+        //Add the new ingredient to the Collection
+        ingredientCollection.push(ingredient);
+
+        //update database count display
+        totalDatabasePopulationDisplay.innerText = ingredientCollection.length;
+    }
+}
+
+function doesIngredientExistInCollection(ingredientName){
+    for (let i= 0; i < ingredientCollection.length; i++){
+        if (ingredientCollection[i].name === ingredientName){
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function performRemovalQuery(){
+    console.log(`attempting remove operation...`);
+
+    //Ignore the command if the ingredient doesn't exist
+    if (!doesIngredientExistInCollection(queryIngredientName)){
+        console.log(`ingredient ${queryIngredientName} doesn't exist in the database`);
+        return;
+    }
+
+    //If valid chemical queries exist, then attempt to remove them from the specified ingredient
+    if (chemicalQueryData.length > 0){
+        let ingredient = getIngredientFromCollection(queryIngredientName);
+
+        for (let i=0; i < chemicalQueryData.length; i++){
+            console.log(`removing chemical:${chemicalQueryData[i].name} from ingredient:${queryIngredientName}...`);
+            ingredient.removeChemical(chemicalQueryData[i].name);
+        }
+    }
+    else {
+        console.log(`removing ingredient:${queryIngredientName} from the database...`);
+
+        //get the index of the ingredient to remove
+        let ingredientToRemove =ingredientCollection.find(element => element.name === queryIngredientName);
+        let index = ingredientCollection.indexOf(ingredientToRemove);
+
+        console.log(`ingredient ${queryIngredientName} at index:${index}...`);
+
+        if (isNumberValid(index)){
+            //remove the ingredient
+            let removedObject = ingredientCollection.splice(index,1);
+            console.log(`object removed: ${queryIngredientName}`);
+
+            //update database count display
+            totalDatabasePopulationDisplay.innerText = ingredientCollection.length;
+        }
+    }
+}
 
 
 //Debugging utilities
