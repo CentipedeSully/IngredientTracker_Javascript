@@ -791,15 +791,57 @@ function getAllMatchingIngredients(){
     //Look at each stored ingredient
     for (let i =0; i < ingredientCollection.length;i++){
 
-        //First determine if the name matches 
-        if (ingredientCollection[i].name.includes(queryIngredientName)){
+        //Start Searching by name if a name was provided
+        if (queryIngredientName !== ""){
 
+            //First determine if the name matches 
+            if (ingredientCollection[i].name.includes(queryIngredientName)){
+
+                //simply return the match if no chemicals were specified
+                if (chemicalQueryData.length === 0){
+                    ingredientMatches.push(ingredientCollection[i]);
+                }
+
+                
+                else {
+                
+                    //Otherwise, determine if each queried chem exists in this ingredient
+                    //set a flag to hold our ingredient's validity
+                    let doAllChemsExist = true;
+
+                    //Get each chem in this ingredient
+                    let ingredientChems = ingredientCollection[i].chemicalValuePairs;
+
+                    //Check if each chemical query exists in this ingredient
+                    for (let j =0; j < chemicalQueryData.length; j++){
+                        doAllChemsExist = doesIngredientContainChemical(
+                            ingredientCollection[i],
+                            chemicalQueryData[j].name,
+                            chemicalQueryData[j].minBound,
+                            chemicalQueryData[j].maxBound);
+                        
+                        if (!doAllChemsExist){
+                            break;
+                        }
+                    }
+
+                    //Add the ingredient if all chems exist
+                    if (doAllChemsExist){
+                        ingredientMatches.push(ingredientCollection[i]);
+                    }
+                }
+
+                
+            }
+        }
+
+        //Otherwise, Ignore looking at the ingredient's name, and go straight to the ingre's chems 
+        else {
             //simply return the match if no chemicals were specified
             if (chemicalQueryData.length === 0){
                 ingredientMatches.push(ingredientCollection[i]);
             }
 
-            
             else {
             
                 //Otherwise, determine if each queried chem exists in this ingredient
@@ -827,8 +869,6 @@ function getAllMatchingIngredients(){
                     ingredientMatches.push(ingredientCollection[i]);
                 }
             }
-
-            
         }
     }
 
