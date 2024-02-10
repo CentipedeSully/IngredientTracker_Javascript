@@ -143,6 +143,7 @@ let queryIngredientName ='';
 let chemicalQueryData = [];
 let queryContext = "search";
 let sortStyle = "alphabetical";
+let logCount = 0;
 
 
 
@@ -188,7 +189,8 @@ clearDisplayBtn.addEventListener("click",clearDisplay);
 
 
 
-let clearOutputLogBtn = document.getElementById("clear-output-log-btn");
+let clearLogBtn = document.getElementById("clear-output-log-btn");
+clearLogBtn.addEventListener("click",clearLog);
 
 
 
@@ -196,7 +198,7 @@ let clearOutputLogBtn = document.getElementById("clear-output-log-btn");
 let totalDatabasePopulationDisplay = document.getElementById("total-database-population-display");
 let currentTablePopulationDisplay = document.getElementById("current-table-population-display");
 let displayTableBody = document.getElementById("display-table-body");
-let logOutputDisplay = document.getElementById("log-output");
+let logDisplay = document.getElementById("log-output");
 
 
 
@@ -641,23 +643,75 @@ function clearQuery(){
 }
 
 function clearLog(){
+
+    //Get all logs
+    let logArry = [...logDisplay.getElementsByClassName("log")];
+
+    //remove each log from the document tree
+    while(logCount > 0){
+
+        let latestLogElement = logArry.pop();
+        latestLogElement.remove();
+
+        logCount--;
+    }
+}
+
+function logSearchAction(){
     
-}
+    //Get ingredient name
+    let ingredientName = queryIngredientName;
 
-function logSearchAction(ingredientName, chemArray){
+    //Default ingredient to --- if none was specified within the query
+    if (queryIngredientName === ""){ 
+        ingredientName = "---"; 
+    }
 
-}
-
-function logAddAction(ingredientName, chemArray){
-
-}
-
-function logRemoveAction(ingredientName, chemArray){
-
-}
-
-function buildLogHTML(){
+    //create the description string
+    let logDescription = `Searched ingredient: ${ingredientName} with ${chemicalQueryData.length} chemical criteria, found ${displayedIngredientCollection.length} results`;
     
+    //create the log
+    createLog(logDescription);
+}
+
+
+function logAddAction(){
+
+    //create the description string
+    let logDescription = `Added/Expanded ingrdient: ${queryIngredientName}`;
+    
+    //create the log
+    createLog(logDescription);
+}
+
+function logRemoveAction(){
+    //create the description string
+    let logDescription = `Removed/Pruned ingrdient: ${queryIngredientName}`;
+    
+    //create the log
+    createLog(logDescription);
+}
+
+function buildLogHTML(description){
+    return `<div class="log-index border-end col-2 text-center">${logCount + 1}</div>
+    <div class="log-text col-10 text-center">${description}</div>`;
+}
+
+function createLog(description){
+    //Create new log element
+    let newLogElement = document.createElement("div");
+
+    //Update attributes into a valid Log
+    newLogElement.setAttribute("class","log text-start row row-cols-2");
+
+    //Build inner log HTML
+    newLogElement.innerHTML = buildLogHTML(description);
+
+    //set new log within the log Display
+    logDisplay.append(newLogElement);
+
+    //update log count
+    logCount++;
 }
 
 function readChemicalQueryData(chemEntryCollection){
@@ -751,20 +805,25 @@ function submitQueryForm(){
         }
 
         //Log the action to the output area
+        logSearchAction();
 
     }
     else if (queryContext === "add"){
         
-        if (queryIngredientName !== '')
+        if (queryIngredientName !== '' && chemicalQueryData.length > 0)
         {
             //Add ingredient to data collection
             addQueryIngredientToCollection();
 
             //Log action to the output area
+            logAddAction();
 
         }
-        else {
+        else if (queryIngredientName === ""){
             alert("Provide an Ingredient Name before submitting an Add query.");
+        }
+        else {
+            alert("Ingredients must contain at least one chemical");
         }
     }
     else if (queryContext === "remove"){
@@ -775,6 +834,7 @@ function submitQueryForm(){
             performRemovalQuery();
 
             //Log action to the output area
+            logRemoveAction();
 
         }
         else {
@@ -1168,7 +1228,4 @@ function testAddingTableElements(){
 
     console.log('Adding test ingredient to table...');
     displayIngredient(ingredient);
-}
-
-function testRemovingTableElements(){
 }
