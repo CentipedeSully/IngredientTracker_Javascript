@@ -147,7 +147,6 @@ let logCount = 0;
 
 
 
-
 //Input references
 let ingredientInputName = document.getElementById("ingredient-name-input");
 
@@ -156,6 +155,7 @@ let ingredientInputName = document.getElementById("ingredient-name-input");
 //Button References
 let importBtn = document.getElementById("import-btn");
 let exportBtn = document.getElementById("export-btn");
+exportBtn.addEventListener("click",BuildAndDownloadIngredientCsv);
 
 
 
@@ -1038,6 +1038,78 @@ function performRemovalQuery(){
         }
     }
 }
+
+
+//File creation and download utils
+function CreateCsvStringFromChemValuePairs(chemValueArry){
+    //chemValue Arry format: [[name1,value1], [n2,v2], [n3,v3], ...]
+
+    console.log('Passed chemArray: \n' + chemValueArry);
+
+    // initialize the string
+    let chemCsvString = '';
+
+    // for each chemical/value pair in the collection
+    for (let i=0; i < chemValueArry.length; i++){
+        
+        //Build this -> ",chemName,chemValue\n" string
+        //the starting comma denotes leaving the first position of the csv reserved for ingredient data
+        //an empty ingredient position means the current row belongs to the last ingredient read
+        
+        //console.log(`index:${i}, content:${chemValueArry[i]}`);
+        chemCsvString += `,${chemValueArry[i][0]},${chemValueArry[i][1]}\n`;
+    }
+
+    //log for debugging
+    console.log('chem CSV demo:\n' + chemCsvString);
+
+    return chemCsvString;
+
+}
+
+function CreateStringFromIngredient(ingredientObj){
+    //initialize csv string 
+    let csvString = '';
+
+    // apply the ingredient's name to the string
+    csvString += ingredientObj.name;
+
+    // apply the ingredient's chem map to the string
+    csvString += CreateCsvStringFromChemValuePairs(ingredientObj.chemicalValuePairs);
+
+    //log for debugging
+    console.log('Ingredient CSV demo:\n' + csvString);
+
+    return csvString;
+
+}
+
+function BuildAndDownloadIngredientCsv(){
+    //Initialize main csv content str
+    let csvString = '';
+
+    //Build each ingredient into the csv string
+    ingredientCollection.forEach(element => {
+        csvString += CreateStringFromIngredient(element)
+    });
+
+    //create blob as our new csv file
+    let newFile = new Blob([csvString], {type: 'text/csv'});
+
+    //create Url
+    let fileURL = URL.createObjectURL(newFile);
+
+    //create anchor
+    let fileAnchor = document.createElement("a");
+
+    //populate anchor
+    fileAnchor.href = fileURL;
+    fileAnchor.download = "SkyIngre.csv";
+
+    //trigger download
+    fileAnchor.click();
+}
+
 
 
 //Debugging utilities
