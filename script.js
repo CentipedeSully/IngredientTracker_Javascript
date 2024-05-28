@@ -144,7 +144,7 @@ let chemicalQueryData = [];
 let queryContext = "search";
 let sortStyle = "alphabetical";
 let logCount = 0;
-
+const fileReader =new FileReader();
 
 
 //Input references
@@ -154,8 +154,9 @@ let ingredientInputName = document.getElementById("ingredient-name-input");
 
 //Button References
 let importBtn = document.getElementById("import-btn");
+importBtn.addEventListener("click",importFile);
 let exportBtn = document.getElementById("export-btn");
-exportBtn.addEventListener("click",BuildAndDownloadIngredientCsv);
+exportBtn.addEventListener("click",buildAndDownloadIngredientCsv);
 
 
 
@@ -692,6 +693,14 @@ function logRemoveAction(){
     createLog(logDescription);
 }
 
+function logExportAction(){
+    //create the description string
+    let logDescription = `exported ingredient file containing ${ingredientCollection.length} entries`;
+
+    //create the log
+    createLog(logDescription);
+}
+
 function buildLogHTML(description){
     return `<div class="log-index border-end col-2 text-center">${logCount + 1}</div>
     <div class="log-text col-10 text-center">${description}</div>`;
@@ -1040,8 +1049,69 @@ function performRemovalQuery(){
 }
 
 
-//File creation and download utils
-function CreateCsvStringFromChemValuePairs(chemValueArry){
+//File import/export utilities
+function importFile()
+{
+    
+    //Get file from document
+    let file = document.getElementById('import-input').files[0];
+
+    //Setup event listeners for the various FileReader events
+    fileReader.addEventListener('loadstart', logReadStart);
+    fileReader.addEventListener('progress', logReadInProgress);
+    fileReader.addEventListener('error', logReadError);
+    fileReader.addEventListener('abort', logReadAborted);
+    fileReader.addEventListener('load', parseFile);
+    fileReader.addEventListener('loadend',removeAllReadListeners);
+
+    //begin reading file
+    fileReader.readAsArrayBuffer(file);
+}
+
+function logReadStart(){
+    //note event sequence for debugging purposes
+    console.log(`filereader LOADSTART fired`);
+}
+
+function logReadInProgress(){
+    //note event sequence for debugging purposes
+    console.log(`filereader PROGRESS fired`);
+}
+
+function logReadError(){
+    //note event sequence for debugging purposes
+    console.log(`filereader ERROR fired`);
+}
+
+function logReadAborted(){
+    //note event sequence for debugging purposes
+    console.log(`filereader ABORT fired`);
+
+}
+
+function parseFile(){
+    //note event sequence for debugging purposes
+    console.log(`filereader LOAD fired`);
+
+}
+
+function removeAllReadListeners(){
+    //note event sequence for debugging purposes
+    console.log(`filereader LOADEND fired: removing listeners from fileReader`);
+
+    fileReader.removeEventListener('loadstart',logReadStart);
+    fileReader.removeEventListener('progress',logReadInProgress);
+    fileReader.removeEventListener('error',logReadError);
+    fileReader.removeEventListener('abort',logReadAborted);
+    fileReader.removeEventListener('load',parseFile);
+    fileReader.removeEventListener('loadend',removeAllReadListeners);
+
+    
+}
+
+
+
+function createCsvStringFromChemValuePairs(chemValueArry){
     //chemValue Arry format: [[name1,value1], [n2,v2], [n3,v3], ...]
 
     console.log('Passed chemArray: \n' + chemValueArry);
@@ -1061,13 +1131,13 @@ function CreateCsvStringFromChemValuePairs(chemValueArry){
     }
 
     //log for debugging
-    console.log('chem CSV demo:\n' + chemCsvString);
+    //console.log('chem CSV demo:\n' + chemCsvString);
 
     return chemCsvString;
 
 }
 
-function CreateStringFromIngredient(ingredientObj){
+function createStringFromIngredient(ingredientObj){
     //initialize csv string 
     let csvString = '';
 
@@ -1075,22 +1145,22 @@ function CreateStringFromIngredient(ingredientObj){
     csvString += ingredientObj.name;
 
     // apply the ingredient's chem map to the string
-    csvString += CreateCsvStringFromChemValuePairs(ingredientObj.chemicalValuePairs);
+    csvString += createCsvStringFromChemValuePairs(ingredientObj.chemicalValuePairs);
 
     //log for debugging
-    console.log('Ingredient CSV demo:\n' + csvString);
+    //console.log('Ingredient CSV demo:\n' + csvString);
 
     return csvString;
 
 }
 
-function BuildAndDownloadIngredientCsv(){
+function buildAndDownloadIngredientCsv(){
     //Initialize main csv content str
     let csvString = '';
 
     //Build each ingredient into the csv string
     ingredientCollection.forEach(element => {
-        csvString += CreateStringFromIngredient(element)
+        csvString += createStringFromIngredient(element)
     });
 
     //create blob as our new csv file
@@ -1108,6 +1178,9 @@ function BuildAndDownloadIngredientCsv(){
 
     //trigger download
     fileAnchor.click();
+
+    //Write Message to Log
+    Log
 }
 
 
