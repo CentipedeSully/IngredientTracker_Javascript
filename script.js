@@ -1131,6 +1131,7 @@ function parseFile(){
             let readIngredient = columns[0];
             let chemical = columns[1];
             let value = columns[2];
+            //console.log(`Parsing row: Ingre(${readIngredient}), chem(${chemical}), val(${value})`);
 
             //if the current ingredient isn't set, but this row holds an ingredient...
             if (currentIngredientName === '' && readIngredient !== ""){
@@ -1142,7 +1143,7 @@ function parseFile(){
                 let ingreObj = new Ingredient(readIngredient, new Map());
 
                 //Add chem to the ingredient Obj
-                ingreObj.addChemical(chemical, parseInt(value));
+                ingreObj.addChemical(chemical, Number(value));
 
                 //Add ingredient to the readMap
                 ingredientsRead.set(currentIngredientName,ingreObj);
@@ -1155,7 +1156,7 @@ function parseFile(){
 
                 //Find the previous ingredient and add this chemical
                 //We use a map here to handle cases where an ingredient is repeated
-                ingredientsRead.get(currentIngredientName).addChemical(chemical,value);
+                ingredientsRead.get(currentIngredientName).addChemical(chemical, Number(value));
             }
 
 
@@ -1169,22 +1170,39 @@ function parseFile(){
                 let ingreObj = new Ingredient(readIngredient, new Map());
 
                 //Add chem to the ingredient Obj
-                ingreObj.addChemical(chemical, parseInt(value));
+                ingreObj.addChemical(chemical, Number(value));
 
                 //Add ingredient to the readMap
                 ingredientsRead.set(currentIngredientName,ingreObj);
+
+                //console.log(`ingredients read: ${ingredientsRead.size}`);
             }
         }
     })
 
-    //log all the read ingredients to the console for debugging
-    ingredientsRead.forEach(()=>{ (val,key,map)=>{
-
-        console.log(`${val.name}\n` + val.chemicalValuePairs);
-    }});
-
     //Log the amount of ingredients imported succesfully
     createLog(`${ingredientsRead.size} ingredients Imported (or Updated)!`);
+
+    //Add ingredients to the database
+    ingredientsRead.forEach((value,key,map)=>{
+
+        //update the ingredient if it exists
+        if (doesIngredientExistInCollection(key)){
+            
+            //get the read ingredient's chemical list
+            let chemValueList = value.chemicalValuePairs;
+
+            //add each chemical of this current read ingredient to the preexisting ingre
+            chemValueList.forEach((elem)=>{
+                getIngredientFromCollection(key).addChemical(elem[0], Number(elem[1]));
+            });            
+        }
+
+        //otherwise add it to the collection
+        else {
+            ingredientCollection.push(value);
+        }
+    })
 }
 
 function removeAllReadListeners(){
@@ -1272,7 +1290,7 @@ function buildAndDownloadIngredientCsv(){
     fileAnchor.click();
 
     //Write Message to Log
-    Log
+    createLog("SkyIngre.csv Created");
 }
 
 
