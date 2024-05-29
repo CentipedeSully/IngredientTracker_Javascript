@@ -1065,27 +1065,39 @@ function importFile()
     fileReader.addEventListener('loadend',removeAllReadListeners);
 
     //begin reading file
-    fileReader.readAsArrayBuffer(file);
+    fileReader.readAsText(file);
 }
 
 function logReadStart(){
     //note event sequence for debugging purposes
     console.log(`filereader LOADSTART fired`);
+
+    //write to log
+    createLog(`Beginning to read imported file`);
 }
 
 function logReadInProgress(){
     //note event sequence for debugging purposes
     console.log(`filereader PROGRESS fired`);
+
+    //write to log
+    createLog(`Reading imported file...`);
 }
 
 function logReadError(){
     //note event sequence for debugging purposes
     console.log(`filereader ERROR fired`);
+
+    //write to log
+    createLog(`Error reading file.`);
 }
 
 function logReadAborted(){
     //note event sequence for debugging purposes
     console.log(`filereader ABORT fired`);
+
+    //write to log
+    createLog(`Reading aborted`);
 
 }
 
@@ -1093,6 +1105,86 @@ function parseFile(){
     //note event sequence for debugging purposes
     console.log(`filereader LOAD fired`);
 
+    //write to log
+    createLog(`Read Successful. Importing content...`);
+
+    
+    //split contents by newline chars
+    let rows = fileReader.result.split('\n');
+
+    rows.forEach((row)=>{
+        console.log(row + "\n");
+    })
+
+    //init the current ingredient
+    let currentIngredientName = '';
+    let ingredientsRead = new Map(); // (key,value) -> (name,IngredientObj)
+
+    //Parse each row!
+    rows.forEach((row)=>{
+        
+        //split the row into its separate columns
+        let columns = row.split(',');
+
+        if (columns.length === 3){
+            //clarify the positions for what they represent
+            let readIngredient = columns[0];
+            let chemical = columns[1];
+            let value = columns[2];
+
+            //if the current ingredient isn't set, but this row holds an ingredient...
+            if (currentIngredientName === '' && readIngredient !== ""){
+
+                //set this ingredient as the new current ingredient
+                currentIngredientName = readIngredient;
+
+                //create a new Ingredient object
+                let ingreObj = new Ingredient(readIngredient, new Map());
+
+                //Add chem to the ingredient Obj
+                ingreObj.addChemical(chemical, parseInt(value));
+
+                //Add ingredient to the readMap
+                ingredientsRead.set(currentIngredientName,ingreObj);
+
+            }
+
+
+            //else if the current ingredient IS set, and we have no ingre in this row...
+            else if (currentIngredientName !=='' && readIngredient === ''){
+
+                //Find the previous ingredient and add this chemical
+                //We use a map here to handle cases where an ingredient is repeated
+                ingredientsRead.get(currentIngredientName).addChemical(chemical,value);
+            }
+
+
+            //else if both the current ingredient is set AND an ingredient exists in this row...
+            else if (currentIngredientName !=='' && readIngredient !== ''){
+
+                //update the current ingredient
+                currentIngredientName = readIngredient;
+
+                //create a new Ingredient object
+                let ingreObj = new Ingredient(readIngredient, new Map());
+
+                //Add chem to the ingredient Obj
+                ingreObj.addChemical(chemical, parseInt(value));
+
+                //Add ingredient to the readMap
+                ingredientsRead.set(currentIngredientName,ingreObj);
+            }
+        }
+    })
+
+    //log all the read ingredients to the console for debugging
+    ingredientsRead.forEach(()=>{ (val,key,map)=>{
+
+        console.log(`${val.name}\n` + val.chemicalValuePairs);
+    }});
+
+    //Log the amount of ingredients imported succesfully
+    createLog(`${ingredientsRead.size} ingredients Imported (or Updated)!`);
 }
 
 function removeAllReadListeners(){
