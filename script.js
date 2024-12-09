@@ -144,12 +144,27 @@ let chemicalQueryData = [];
 let queryContext = "search";
 let sortStyle = "alphabetical";
 let logCount = 0;
+let isInputValid = false;
 const fileReader =new FileReader();
 
 
 //Input references
 let ingredientInputName = document.getElementById("ingredient-name-input");
+ingredientInputName.addEventListener("input",validateIngredientNameInput);
 
+let chemEntryContainer = document.getElementById("chemical-entry-container");
+chemEntryContainer.addEventListener("input",function(e){
+
+    //make don't allow any commas in the chem inputs
+    if (e.target &&  (e.target.value).match(/,+/g)){
+        isInputValid = false;
+        submitQueryBtn.setAttribute("disabled","true");
+    }
+    else{
+        isInputValid = true;
+        submitQueryBtn.removeAttribute("disabled");
+    }
+})
 
 
 //Button References
@@ -249,6 +264,20 @@ function enterRemoveContext(){
 }
 
 
+
+//input validation-related
+function validateIngredientNameInput(){
+    if ((ingredientInputName.value).match(/,+/g)){
+        isInputValid = false;
+        submitQueryBtn.setAttribute("disabled","true");
+    }
+    else{
+        isInputValid = true;
+        submitQueryBtn.removeAttribute("disabled");
+    }
+}
+
+
 //Chemical-field related
 function buildChemNameInputHTML(chemEntryNumber){
     return `<div class="input-group pb-1 chem-name-container">
@@ -314,6 +343,7 @@ function getChemEntryElement(chemEntryNumber){
 function removeEntry(chemEntryNumber){
     if (doesChemEntryExist(chemEntryNumber)){
         getChemEntryElement(chemEntryNumber).remove();
+        
         chemicalEntriesCount--;
     }
 }
@@ -641,6 +671,12 @@ function clearQuery(){
     let queryInputCollection = document.getElementsByClassName("query-input");
     for (let i = 0; i < queryInputCollection.length; i++)
         queryInputCollection[i].value = "";
+
+    if (!isInputValid)
+    {
+        isInputValid = true;
+        submitQueryBtn.removeAttribute("disabled");
+    }
 }
 
 function clearLog(){
