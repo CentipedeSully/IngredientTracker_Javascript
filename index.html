@@ -40,16 +40,16 @@
 
         <!-- Import/Export Area -->
         <form action="" id="file-form" class="mb-3">
-            <div class="py-2 mb-2 rounded container ">
+            <div class="py-2 mb-2 rounded container">
                 <div class="row row-cols-md-2 row-cols-lg-3 row-cols-sm-1 row-cols-1 justify-content-center">
-                    <div class="col ">
+                    <div class="col-4">
                         <label for="import-btn" class="form-label">
                             Import: <input type="file" id="import-input" accept=".csv" class="form-control">
                             <button id="import-btn" class="btn btn-outline-success btn-sm px-3 my-1"
                                 type="button">Import</button>
                         </label>
                     </div>
-                    <div class="col">
+                    <div class="col-4">
                         <p class="form-label mb-0">Export:</p>
                         <button id="export-btn" class="btn btn-outline-secondary btn-sm px-5"
                             type="button">Export</button>
@@ -62,61 +62,103 @@
 
 
         <!-- Input & Display Row -->
-        <div class="row hover">
+        <div class="row justify-content-center">
+
             <!-- Inputs -->
-            <div class="container col-4">
-
-                <!-- Build Query context buttons -->
-                <div class="row">
-                    <h5 class="py-2">Build Query</h5>
-                    <div class="btn-group btn-group" style="display: inline;">
-                        <input type="radio" class="btn-check" name="query-context" id="search-context-btn" checked>
-                        <label for="search-context-btn" class="btn btn-outline-secondary ">Search</label>
-                        <input type="radio" class="btn-check" name="query-context" id="add-context-btn">
-                        <label for="add-context-btn" class="btn btn-outline-success ">Add</label>
-                        <input type="radio" class="btn-check" name="query-context" id="remove-context-btn">
-                        <label for="remove-context-btn" class="btn btn-outline-danger ">Remove</label>
-                    </div>
-                </div>
-
-                <!-- query form -->
-                <div class="row text-start py-3">
-                    <form action="" id="query-form">
-                        <div class="pb-3">
-                            <label class="form-label fs-5" for="ingredient-name-input">Ingredient:</label>
-                            <input id="ingredient-name-input" name="ingredientName" class="form-control query-input"
-                                type="text" placeholder="---">
+             <div id="input-field" class="bg-secondary-subtle rounded">
+                <form  class="" action="" id="query-form">
+                    <div class="row py-3 justify-content-center">
+    
+                        <!-- top-most buttons -->
+                        <div class="row justify-content-between pb-1">
+                            <div class="col-2 ">
+                                <!-- query buttons -->
+                                <span class="btn-group">
+                                    <input type="radio" class="btn-check" name="query-context" id="search-context-btn" checked>
+                                    <label for="search-context-btn" class="btn btn-outline-secondary  btn-sm">Search</label>
+                                    <input type="radio" class="btn-check" name="query-context" id="add-context-btn">
+                                    <label for="add-context-btn" class="btn btn-outline-success  btn-sm">Add</label>
+                                    <input type="radio" class="btn-check" name="query-context" id="remove-context-btn">
+                                    <label for="remove-context-btn" class="btn btn-outline-danger  btn-sm">Remove</label>
+                                </span>
+                            </div>
+    
+                            <div class="col-1 text-end">
+                                <!-- clear Button-->
+                                <span class="text-end">
+                                    <button id="clear-query-btn" class="btn btn-outline-secondary btn-sm" type="button">Clear</button>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Input Fields -->
+                        <div class="row pt-3">
+                            <div class="col-4">
+                                <input id="ingredient-name-input" name="ingredientName" class="form-control query-input text-center"
+                                        type="text" placeholder="---">
+                                        <div class="pt-1">
+                                            <label class="form-label" for="ingredient-name-input">Ingredient</label>
+                                        </div>
+                            </div>
+    
+    
+                            <div class="col-8">
+    
+                                <!-- Chemical Inputs-->
+                                <fieldset class="">
+                                    <div class="row justify-content-end px-2">
+                                        <legend class="col-3">Componets</legend>
+    
+                                        <!-- Add/Remove entry buttons -->
+                                        <div class="col-1">
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <button id="add-chem-entry-btn" class="btn btn-outline-secondary btn-sm">+</button>
+                                                <button id="remove-chem-entry-btn" class="btn btn-outline-secondary btn-sm">-</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                    
+                                    
+                                    <div id="chemical-entry-container"
+                                        class=" p-1 border rounded overflow-scroll d-flex gap-2 flex-column"
+                                        style="max-height: 250px;">
+                                        <!-- Chemical Entries go here -->
+                                        <!-- They are created dynamically via script-->
+                                    </div>
+                                </fieldset>
+    
+                            </div>
                         </div>
 
-                        <fieldset>
-                            <legend class="fs-5">Chemical Composition:</legend>
-                            <div id="chemical-entry-container"
-                                class=" p-1 border rounded overflow-scroll d-flex gap-2 flex-column"
-                                style="max-height: 250px;">
-                                <!-- Chemical Entries go here -->
-                                <!-- They are created dynamically via script-->
-                            </div>
-                        </fieldset>
-                    </form>
-                </div>
+                        <!-- Current query items area-->
+                        <div class="row">
 
-                <!-- Add/Remove entry buttons -->
-                <div class="row">
-                    <div class="d-flex justify-content-start pb-3 gap-1">
-                        <button id="add-chem-entry-btn" class="btn btn-outline-secondary">+</button>
-                        <button id="remove-chem-entry-btn" class="btn btn-outline-secondary">-</button>
+                        </div>
+
+                        <!-- Go Button -->
+                         <div class="row">
+                            <!-- Clear/Submit query buttons -->
+                            <span class="col text-end">
+                                <button id="submit-query-btn" class="btn btn-outline-success " type="button">Submit Query</button>
+                            </span>
+                         </div>
+                        
+
+                        
                     </div>
-                </div>
+                </form>
 
-                <!-- Clear/Submit query buttons -->
                 <div class="row">
-                    <div class="d-flex justify-content-end pb-3 gap-1 flex-wrap">
-                        <button id="clear-query-btn" class="btn btn-outline-secondary" type="button">Clear</button>
-                        <button id="submit-query-btn" class="btn btn-outline-success" type="button">Submit</button>
-                    </div>
-                </div>
+                    
 
-            </div>
+                    
+                </div>
+             </div>
+            
+
+            
 
             <!-- Display -->
             <div class="col-8 ">
