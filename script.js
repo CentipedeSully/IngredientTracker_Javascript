@@ -401,7 +401,7 @@ function buildChemicalQueryElement(name, amount, min, max){
 
     //create name text element
     let nameSpan = document.createElement("span");
-    nameSpan.setAttribute("class","col text-center");
+    nameSpan.setAttribute("class","col text-center query-name-info");
     nameSpan.innerText =`${name}`;
     childContainer.appendChild(nameSpan);
 
@@ -545,20 +545,8 @@ function updateQuery(){
 
 function submitQueryForm(){
 
-    //Read Query data: Get ingredient name and chem entry data
-    let ingredientName = document.getElementById("ingredient-name-input").value;
-    let chemEntryCollection = document.getElementsByClassName("chem-entry");
-    console.log(`${chemEntryCollection.length} eentries collected`);
-
-    //Validate ingredient name
-    if (!isStringValid(ingredientName))
-        ingredientName = '';
-
-    //Add ingredient name to the query
-    queryIngredientName = ingredientName;
-
     //Read chemical query data
-    readChemicalQueryData(chemEntryCollection);
+    readChemicalQueryData();
 
     logQueryData();
 
@@ -862,54 +850,31 @@ function createLog(description){
     logCount++;
 }
 
-function readChemicalQueryData(chemEntryCollection){
+function readChemicalQueryData(){
     //Clear the old query
     chemicalQueryData.length = 0;
 
-    for (let i=0; i < chemEntryCollection.length; i++){
+    for (let i=0; i < chemicalQueryContainer.children.length; i++){
         //Build a new chem query object
         let chemData = new ChemicalEntryData;
 
-        //Validate and read the name, numbers, and values
-        let chemNameInput = document.getElementById(`chem${i + 1}-name`).value;
-        if (isStringValid(chemNameInput) && !isStringEmpty(chemNameInput))
-            chemData.name = chemNameInput;
-        else {
-            //Do not risk adding any empty chemical entries. Move on to the next entry
-            break;
-        }
+        //console.log(`${chemicalQueryContainer.children[i].getElementsByClassName("query-name-info")[0]}`);
+        //Read the chem's name element
+        chemData.name = chemicalQueryContainer.children[i].getElementsByClassName("query-name-info")[0].innerText.trim();
 
-        //read the chem value, if it exists
-        if (document.getElementById(`chem${i + 1}-value`) !== null){
-            let chemValueInput = Number(document.getElementById(`chem${i + 1}-value`).value);
-
-            //default the value to 1
-            chemValueInput = Math.max(1,chemValueInput);
-
-            //accept the value
-            chemData.value = chemValueInput;
-        }
+        //read the chem's value element
+        chemData.value = Number(chemicalQueryContainer.children[i].getElementsByClassName("query-qty-info")[0].innerText);
         
-        //read the bounds inputs, if they exist
-        if (document.getElementById(`chem${i + 1}-min-bound`) !== null && document.getElementById(`chem${i + 1}-max-bound`) !== null){
-            let chemMinBoundInput = Number(document.getElementById(`chem${i + 1}-min-bound`).value);
-            let chemMaxBoundInput = Number(document.getElementById(`chem${i + 1}-max-bound`).value);
+        //read the chem's bounds element
+        let chemBoundsString= chemicalQueryContainer.children[i].getElementsByClassName("query-bounds-info")[0].innerText.slice(1,-1); //remove the brackets -> [m,M]
+        let chemBoundsArr= chemBoundsString.split('-');
 
-            //default the minBound to 1
-            chemMinBoundInput = Math.max(1,chemMinBoundInput); //MinBound will always be >= 1
+        let chemMinBoundInput = Number(chemBoundsArr[0]);
+        let chemMaxBoundInput = Number(chemBoundsArr[1]);
 
-            //default the maxBound to MAX if it's current value is 0 (due to being left empty)
-            if (chemMaxBoundInput === 0){
-                chemMaxBoundInput = Number.MAX_VALUE;
-            }
-
-            //Otherwise, make the maxBound ALWAYS >= minBound
-            chemMaxBoundInput = Math.max(chemMinBoundInput,chemMaxBoundInput);
-
-            //accept the bounding values
-            chemData.minBound = chemMinBoundInput;
-            chemData.maxBound = chemMaxBoundInput;
-        }
+        //accept the bounding values. Swap if they're illogical
+        chemData.minBound = Math.min(chemMinBoundInput,chemMaxBoundInput);
+        chemData.maxBound = Math.max(chemMinBoundInput,chemMaxBoundInput);
 
 
         //Add the data to the query collection
