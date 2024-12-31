@@ -548,6 +548,7 @@ function submitQueryForm(){
     //Read chemical query data
     readChemicalQueryData();
 
+    //create a log for the action
     logQueryData();
 
     if (queryContext === "search"){
@@ -568,7 +569,15 @@ function submitQueryForm(){
         //Log the action to the output area
         logSearchAction();
 
+        //lastly, scroll to the display
+        document.getElementById("full-display-area").scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+
+        });
+
     }
+
     else if (queryContext === "add"){
         
         if (queryIngredientName !== '' && chemicalQueryData.length > 0)
@@ -587,6 +596,7 @@ function submitQueryForm(){
             alert("Ingredients must contain at least one chemical");
         }
     }
+
     else if (queryContext === "remove"){
 
         if (queryIngredientName !== '')
@@ -603,7 +613,12 @@ function submitQueryForm(){
         }
     }
 
+    
+
+
 }
+
+
 
 //Table-related utilities
 
@@ -844,10 +859,19 @@ function createLog(description){
     newLogElement.innerHTML = buildLogHTML(description);
 
     //set new log within the log Display
-    logDisplay.append(newLogElement);
+    logDisplay.appendChild(newLogElement);
 
     //update log count
     logCount++;
+
+    //update the log's scroll top
+    logDisplay.scrollTop = logDisplay.scrollHeight;
+
+    //scroll to the latest log entry
+    newLogElement.scrollTo({
+        top: logDisplay.scrollHeight,
+        behaviour: "smooth"
+    });
 }
 
 function readChemicalQueryData(){
