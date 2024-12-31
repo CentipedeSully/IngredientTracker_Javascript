@@ -20,42 +20,41 @@
     </div>
 
     <!-- ========== Body ========== -->
-    <div class="container py-5 text-center">
+    <div class="container pt-5 text-center">
         <!-- Page Intro -->
-        <div class="row pb-3">
-            <h1 class="bg-secondary-subtle rounded-top mb-0 pt-2">Skyrim Ingredient Tracker</h1>
-            <p class="bg-secondary-subtle rounded-bottom fst-italic pb-2">
-                Created by
-                <span style="font-style: normal;">Sully</span>
-                (<a href="https://github.com/CentipedeSully/IngredientTracker_Javascript/tree/main">Visit Github</a>)
-            </p>
-            <p class="pt-1 pb-3">
-                This utility is meant to help players track their alchemical progress while
-                using the
-                <a href="https://www.nexusmods.com/skyrimspecialedition/mods/20983" style="text-decoration: none;">
-                    Spell-Research Mod.
-                </a>
+        <div class="row">
+            <div class="row bg-secondary-subtle rounded">
+                <h1 class="">Skyrim Ingredient Tracker</h1>
+                <p class="fst-italic pb-2 font-size">
+                    Created by
+                    <span style="font-style: normal;">Sully</span>
+                    (<a href="https://github.com/CentipedeSully/IngredientTracker_Javascript/tree/main">Visit Github</a>)
+                </p>
+            </div>
+            <p class="pt-1">
+                <small>
+                    This utility is meant to help players track their alchemical progress while
+                    using the
+                    <a href="https://www.nexusmods.com/skyrimspecialedition/mods/20983" style="text-decoration: none;">
+                        Spell-Research Mod.
+                    </a>
+                </small>
             </p>
         </div>
 
         <!-- Import/Export Area -->
-        <form action="" id="file-form" class="mb-3">
-            <div class="py-2 mb-2 rounded container">
-                <div class="row row-cols-md-2 row-cols-lg-3 row-cols-sm-1 row-cols-1 justify-content-center">
-                    <div class="col-4">
-                        <label for="import-btn" class="form-label">
-                            Import: <input type="file" id="import-input" accept=".csv" class="form-control">
-                            <button id="import-btn" class="btn btn-outline-success btn-sm px-3 my-1"
-                                type="button">Import</button>
-                        </label>
-                    </div>
-                    <div class="col-4">
-                        <p class="form-label mb-0">Export:</p>
-                        <button id="export-btn" class="btn btn-outline-secondary btn-sm px-5"
-                            type="button">Export</button>
-                    </div>
+        <form action="" id="file-form" class="mb-3 mt-3">
+            <div class="row justify-content-center align-items-end gap-2">
 
+                <div class="col-3">
+                    <input type="file" id="import-input" accept=".csv" class="form-control">
                 </div>
+
+                <button id="import-btn" class="btn btn-outline-success btn-sm px-3 col-auto"
+                    type="button">Import</button>
+
+                <button id="export-btn" class="btn btn-outline-secondary btn-sm px-3 col-auto"
+                    type="button">Export</button>
 
             </div>
         </form>
@@ -84,7 +83,7 @@
                                 </span>
                             </div>
     
-                            <div class="col-1 text-end">
+                            <div class="col-2 text-end">
                                 <!-- clear Button-->
                                 <span class="text-end">
                                     <button id="clear-query-btn" class="btn btn-outline-secondary btn-sm" type="button">Clear</button>
@@ -151,7 +150,7 @@
 
                             
                             <!-- Add-chem-to-query button-->
-                            <div class="text-center col-1 ">
+                            <div class="text-end col-2 ">
                                 <button id="add-to-query-btn" class="btn btn-outline-secondary btn-sm" type="button">Add to Query</button>
                             </div>
                         </div>
@@ -276,7 +275,7 @@
         </div>
 
         <!-- Directions! -->
-        <div class="row border rounded">
+        <div class="row border rounded mt-5">
             <h3 class="py-3 bg-secondary-subtle">How To Use:</h3>
             <div class="py-2">
                 <h5 class="">Step 1: Specify a query context</h5>
@@ -338,7 +337,7 @@
                 <h5 class="">Additional Features:</h5>
                 <div class="px-5 pb-4">
                     <p>
-                        Data may be imported into or exported from the database. Simply
+                        Save data by exporting the current data as a file, and load data by importing an ingredient (.csv) data file.
                     </p>
                 </div>
             </div>
