@@ -171,8 +171,37 @@ let chemicalAmountInput = document.getElementById("chem-amount-input");
 
 //HTML Container references
 let ingredientQueryContainer = document.getElementById("ingredient-query-container");
-let chemicalQueryContainer = document.getElementById("chemical-query-container");
+ingredientQueryContainer.addEventListener('click', (event) =>{
 
+    //Don't reload the page!!
+    event.preventDefault();
+
+    //check if the element is a valid ingredient element
+    if (event.target.classList.contains("query-ingredient")){
+        
+        //remove the element from the dom
+        ingredientQueryContainer.removeChild(event.target);
+
+        //replace the removed ingredient with a generic, unclickable substitude
+        buildIngredientQueryElement("");
+    }
+});
+
+let chemicalQueryContainer = document.getElementById("chemical-query-container");
+chemicalQueryContainer.addEventListener('click', (event) => {
+    
+    //Dont reload the page!!
+    event.preventDefault();
+
+    //check if the element is a valid chemical element
+    if (event.target.classList.contains("query-chemical")){
+
+        //remove the element from the dom
+        chemicalQueryContainer.removeChild(event.target);
+
+        console.log("chem removal requested!");
+    }
+});
 
 
 //Button References
@@ -319,26 +348,39 @@ function unlockSubmission(){
 //Query related
 function buildIngredientQueryElement(name){
 
+    let isIngredientBlank = false;
     //default the name to "any Ingredient" if empty
     if (name ==="")
-        name = "(any)";
+        isIngredientBlank = true;
 
 
     //create the element
-    let newIngredientElement = document.createElement("div");
-    newIngredientElement.setAttribute("class","query-ingredient col-2 rounded btn btn-secondary");
+    let newIngredientElement = document.createElement("button");
+
+    //disable the button if the ingredient wasn't specified
+    if (isIngredientBlank)
+        newIngredientElement.setAttribute("disabled",true);
+
+    newIngredientElement.setAttribute("input","button");
+    newIngredientElement.setAttribute("class","query-ingredient col-3 rounded btn btn-secondary");
     newIngredientElement.setAttribute("id",`ingredient-${name}`);
     ingredientQueryContainer.append(newIngredientElement);
 
     //create the child container element
     let childDiv = document.createElement("div");
-    childDiv.setAttribute("class","row justify-content-center");
+    childDiv.setAttribute("class","row justify-content-center pe-none");
     newIngredientElement.appendChild(childDiv);
 
     //create the innermost child text element
     spanElement = document.createElement("span");
     spanElement.setAttribute("class","col text-center");
-    spanElement.innerText=  `${name}`;
+
+    if (name ==="")
+        spanElement.innerText = `(any)`;
+
+    else 
+        spanElement.innerText=  `${name}`;
+
     childDiv.appendChild(spanElement);
 
 }
@@ -346,31 +388,32 @@ function buildIngredientQueryElement(name){
 function buildChemicalQueryElement(name, amount, min, max){
 
     //create the element 
-    let newChemElement = document.createElement("div");
-    newChemElement.setAttribute("class","query-chemical col-2 rounded btn btn-secondary btn-sm ");
+    let newChemElement = document.createElement("button");
+    newChemElement.setAttribute("input","button");
+    newChemElement.setAttribute("class","query-chemical col-2 col-sm-3 col-xs-3 rounded btn btn-secondary btn-sm ");
     newChemElement.setAttribute("id",`chemical-${name}`);
     chemicalQueryContainer.appendChild(newChemElement);
 
     //create child container element
     let childContainer = document.createElement("div");
-    childContainer.setAttribute("class","row justify-content-between");
+    childContainer.setAttribute("class","row justify-content-between pe-none");
     newChemElement.appendChild(childContainer);
 
     //create name text element
     let nameSpan = document.createElement("span");
-    nameSpan.setAttribute("class","col text-start");
+    nameSpan.setAttribute("class","col text-center");
     nameSpan.innerText =`${name}`;
     childContainer.appendChild(nameSpan);
 
     //create bounds text element
     let boundsSpan = document.createElement("span");
-    boundsSpan.setAttribute("class","col text-end query-bounds-info");
-    boundsSpan.innerText = `[${min},${max}]`;
+    boundsSpan.setAttribute("class","col text-center query-bounds-info");
+    boundsSpan.innerText = `[${min}-${max}]`;
     childContainer.appendChild(boundsSpan);
 
     //create amount text element
     let qtySpan = document.createElement("span");
-    qtySpan.setAttribute("class","col text-end query-qty-info");
+    qtySpan.setAttribute("class","col text-center query-qty-info");
     qtySpan.innerText = `${amount}`;
     childContainer.appendChild(qtySpan);
 
@@ -423,9 +466,9 @@ function clearQuery(){
     //clear the input fields
     ingredientInputName.value="";
     chemicalInputName.value="";
-    chemicalMinInput.value ="";
-    chemicalMaxInput.value ="";
-    chemicalAmountInput.value="";
+    chemicalMinInput.value =1;
+    chemicalMaxInput.value =999;
+    chemicalAmountInput.value=1;
 
     //erase all dynamic query html
     while (ingredientQueryContainer.hasChildNodes())
@@ -482,7 +525,7 @@ function updateQuery(){
     
                     //update the html of the preexisting element
                     let chemElement = chemicalQueryContainer.children[i];
-                    chemElement.getElementsByClassName("query-bounds-info")[0].innerText = `[${queryChemicalMin},${queryChemicalMax}]`;
+                    chemElement.getElementsByClassName("query-bounds-info")[0].innerText = `[${queryChemicalMin}-${queryChemicalMax}]`;
                     chemElement.getElementsByClassName("query-qty-info")[0].innerText = `${queryChemicalQty}`;
     
                     break;
